@@ -26,5 +26,8 @@
     <ClInclude Include="stringvector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ReadfromFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

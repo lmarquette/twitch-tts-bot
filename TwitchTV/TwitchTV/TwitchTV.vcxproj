@@ -114,6 +114,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ReadfromFile.h" />
     <ClInclude Include="stringvector.h" />
     <ClInclude Include="twitchcode.h" />
   </ItemGroup>

@@ -16,16 +16,26 @@ using namespace std;
 
 #include "twitchcode.h"
 #include "stringvector.h"
+#include "ReadfromFile.h"
 
 #include <sapi.h>
 #include <sphelper.h>
 #include <atlbase.h>
+#include <msclr/marshal.h>
 
 #pragma warning(disable : 4996)
+
+const long long int buffer_size = 10000;
+
 
 
 int main(int argc, char **argv)
 {
+	//initialize tts
+	ISpVoice * pVoice = NULL;
+	CoInitialize(NULL);
+	CoCreateInstance(CLSID_SpVoice, NULL, CLSCTX_ALL, IID_ISpVoice, (void**)&pVoice);
+
 	//initialize network
 	Twitch::startup();
 
@@ -45,31 +55,6 @@ int main(int argc, char **argv)
 
 	twitch_messages::data twitch_msg;
 	twitch_messages::init(&twitch_msg);
-
-	StringVector::data actions;
-	StringVector::init(&actions);
-
-	StringVector::data recipe;
-	StringVector::init(&recipe);
-
-	TrackNames::data track_names;
-	TrackNames::init(&track_names);
-
-	StringVector::add(&actions, "AAAAAAACHOP");
-	StringVector::add(&actions, "Gently stroke");
-	StringVector::add(&actions, "Rub tenderly");
-	StringVector::add(&actions, "RKO");
-	StringVector::add(&actions, "Boil");
-	StringVector::add(&actions, "Slowly insert");
-
-	StringVector::add(&recipe, "Chicken");
-	StringVector::add(&recipe, "Human toe");
-	StringVector::add(&recipe, "Broccoli");
-	StringVector::add(&recipe, "Hot Dog");
-	StringVector::add(&recipe, "Steak");
-	StringVector::add(&recipe, "Vegetables");
-	StringVector::add(&recipe, "General Tso");
-
 	
 	//https://stackoverflow.com/questions/3220477/how-to-use-clock-in-c examples
 
@@ -80,14 +65,10 @@ int main(int argc, char **argv)
 	
 	bool runTime = true;
 
-	
-	
-
 	printf("chat log\n");	
 	for (;;)
 	{
 		
-
 		srand(time(0));
 		unsigned int timestamp = clock();
 
@@ -102,8 +83,6 @@ int main(int argc, char **argv)
 		//print received messages from all channels
 		for (int i = 0; i < incoming.n_count; i++)
 		{
-
-
 			//printf("%s@%s|(%.2f)->%s\n", incoming.username[i], incoming.channel[i], (double)timestamp / CLOCKS_PER_SEC, incoming.message[i]);
 
 			//printf("message length: %d\n", strlen(incoming.message[i]));
@@ -159,6 +138,10 @@ int main(int argc, char **argv)
 			//retrieve messages from twitch
 			printf("%s@%s|(%.2f)->%s\n", incoming.username[i], incoming.channel[i], (double)timestamp / CLOCKS_PER_SEC, incoming.message[i]);
 
+			const wchar_t *input = L"Gorillas live in Central Africa. There are two main species of gorilla, the Eastern Gorilla and the Western Gorilla. The Western Gorilla lives in Western Africa in countries such as Cameroon, the Congo, the Central African Republic, and Gabon. The Eastern Gorilla lives in Eastern African countries such as Uganda and Rwanda.";
+
+			pVoice->Speak(input, SPF_DEFAULT, NULL);
+			pVoice->Skip()
 			//tokenize messages
 			char *delimiters = " .,!\n\r?";
 			char tmp_msg[512];
@@ -182,6 +165,11 @@ int main(int argc, char **argv)
 			{
 				sort(&twitch_msg);
 			}
+
+			//cleanup
+			pVoice->Release();
+			pVoice = NULL;
+			CoUninitialize();
 		}
 
 	
