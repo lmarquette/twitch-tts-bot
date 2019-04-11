@@ -16,12 +16,11 @@ using namespace std;
 
 #include "twitchcode.h"
 #include "stringvector.h"
-#include "ReadfromFile.h"
+//#include "ReadfromFile.h"
 
 #include <sapi.h>
 #include <sphelper.h>
 #include <atlbase.h>
-#include <msclr/marshal.h>
 
 #pragma warning(disable : 4996)
 
@@ -141,7 +140,7 @@ int main(int argc, char **argv)
 			const wchar_t *input = L"Gorillas live in Central Africa. There are two main species of gorilla, the Eastern Gorilla and the Western Gorilla. The Western Gorilla lives in Western Africa in countries such as Cameroon, the Congo, the Central African Republic, and Gabon. The Eastern Gorilla lives in Eastern African countries such as Uganda and Rwanda.";
 
 			pVoice->Speak(input, SPF_DEFAULT, NULL);
-			pVoice->Skip()
+			pVoice->Skip(input, 5, NULL);
 			//tokenize messages
 			char *delimiters = " .,!\n\r?";
 			char tmp_msg[512];

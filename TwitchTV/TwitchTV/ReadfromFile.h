@@ -2,8 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const long long int buffer_size = 10000;
-
 
 int ReadingLines(char **lines, const char *filename)
 {
