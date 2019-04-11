@@ -1,0 +1,7 @@
+﻿  main.cpp
+h:\coding\twitchtv\twitchtv\twitchcode.h(205): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
+h:\coding\twitchtv\twitchtv\stringvector.h(23): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
+h:\coding\twitchtv\twitchtv\stringvector.h(61): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
+h:\coding\twitchtv\twitchtv\stringvector.h(100): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
+h:\coding\twitchtv\twitchtv\main.cpp(86): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  TwitchTV.vcxproj -> H:\Coding\TwitchTV\Debug\TwitchTV.exe
