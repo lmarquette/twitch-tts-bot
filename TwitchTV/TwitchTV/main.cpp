@@ -19,21 +19,25 @@ using namespace std;
 //#include "ReadfromFile.h"
 
 #include <sapi.h>
-#include <sphelper.h>
-#include <atlbase.h>
+//#include <sphelper.h>
+//#include <atlbase.h>
 
 #pragma warning(disable : 4996)
 
 const long long int buffer_size = 10000;
 
-
+void initialize_tts(ISpVoice** pVoice)
+{
+	CoInitialize(NULL);
+	CoCreateInstance(CLSID_SpVoice, NULL, CLSCTX_ALL, IID_ISpVoice, (void**)pVoice);
+}
 
 int main(int argc, char **argv)
 {
 	//initialize tts
 	ISpVoice * pVoice = NULL;
-	CoInitialize(NULL);
-	CoCreateInstance(CLSID_SpVoice, NULL, CLSCTX_ALL, IID_ISpVoice, (void**)&pVoice);
+	initialize_tts(&pVoice);
+	wchar_t wstr[buffer_size];
 
 	//initialize network
 	Twitch::startup();
@@ -46,7 +50,7 @@ int main(int argc, char **argv)
 	Twitch::connect(&connection);
 
 	//join a channel
-	Twitch::join_Channel(&connection, "guildude");
+	Twitch::join_Channel(&connection, "riotgames");
 
 	//incoming message list from all connected channels
 	Twitch::Message::Table incoming;
@@ -83,15 +87,12 @@ int main(int argc, char **argv)
 		for (int i = 0; i < incoming.n_count; i++)
 		{
 			//printf("%s@%s|(%.2f)->%s\n", incoming.username[i], incoming.channel[i], (double)timestamp / CLOCKS_PER_SEC, incoming.message[i]);
-
 			//printf("message length: %d\n", strlen(incoming.message[i]));
-
 			/*if (strcmp("!test\r", incoming.message[i]) == 0)
 			{
 				Twitch::send_Message(&connection, "guildude", "test received");
 				Sleep(1000);
 			}*/
-
 			/*
 			char *ret = strstr(incoming.message[i], "recipe"); //strstr checks inside a string for the specific word
 			if (ret != NULL)
@@ -101,9 +102,7 @@ int main(int argc, char **argv)
 				sprintf(tmp, "Chef Ramsey says you should %s the %s", actions.str[rand() % actions.n_count], recipe.str[rand() % actions.n_count]);
 
 				Twitch::send_Message(&connection, "guildude", tmp);
-
 			}
-
 			char *name = strstr(incoming.message[i], "name");
 			if (name != NULL)
 			{
@@ -125,22 +124,17 @@ int main(int argc, char **argv)
 				sprintf(tmp, "Hello @%s this is leo%d", incoming.username[i], rand() % 256); //%s points towards a string, %d points towards random numbers
 
 				Twitch::send_Message(&connection, "guildude", tmp);
-
-
-
-				cout << "Time: " << time << endl;
+				//cout << "Time: " << time << endl;
 
 			}
-
-			cout << "Time: " << time_passed << endl;
+			//cout << "Time: " << time_passed << endl;
 
 			//retrieve messages from twitch
 			printf("%s@%s|(%.2f)->%s\n", incoming.username[i], incoming.channel[i], (double)timestamp / CLOCKS_PER_SEC, incoming.message[i]);
-
-			const wchar_t *input = L"Gorillas live in Central Africa. There are two main species of gorilla, the Eastern Gorilla and the Western Gorilla. The Western Gorilla lives in Western Africa in countries such as Cameroon, the Congo, the Central African Republic, and Gabon. The Eastern Gorilla lives in Eastern African countries such as Uganda and Rwanda.";
-
-			pVoice->Speak(input, SPF_DEFAULT, NULL);
-			pVoice->Skip(input, 5, NULL);
+			
+			mbstowcs(wstr, incoming.message[i], buffer_size); //convert twitch messages into wide character
+			pVoice->Speak(wstr, SVSFlagsAsync | SVSFPurgeBeforeSpeak, NULL); //output twitch messages 
+			
 			//tokenize messages
 			char *delimiters = " .,!\n\r?";
 			char tmp_msg[512];
@@ -150,7 +144,7 @@ int main(int argc, char **argv)
 
 			while (token != NULL)
 			{
-				printf("%s\n", token);
+				//printf("%s\n", token);
 
 				//append words to a master list
 				twitch_messages::add(&twitch_msg, token);
@@ -164,13 +158,7 @@ int main(int argc, char **argv)
 			{
 				sort(&twitch_msg);
 			}
-
-			//cleanup
-			pVoice->Release();
-			pVoice = NULL;
-			CoUninitialize();
 		}
-
 	
 	}
 

@@ -1,8 +1,7 @@
 ﻿  main.cpp
-e:\github\twitch-tts-bot\twitchtv\twitchtv\twitchcode.h(205): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
-e:\github\twitch-tts-bot\twitchtv\twitchtv\stringvector.h(23): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
-e:\github\twitch-tts-bot\twitchtv\twitchtv\stringvector.h(61): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
-e:\github\twitch-tts-bot\twitchtv\twitchtv\stringvector.h(100): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
-c:\program files (x86)\windows kits\10\include\10.0.16299.0\um\sphelper.h(1319): error C4996: 'GetVersionExA': was declared deprecated
-  c:\program files (x86)\windows kits\10\include\10.0.16299.0\um\sysinfoapi.h(436): note: see declaration of 'GetVersionExA'
-e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(71): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\twitchcode.h(205): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\stringvector.h(23): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\stringvector.h(61): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\stringvector.h(100): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(75): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  TwitchTV.vcxproj -> C:\Users\Kouhai\Documents\GitHub\twitch-tts-bot\TwitchTV\Debug\TwitchTV.exe

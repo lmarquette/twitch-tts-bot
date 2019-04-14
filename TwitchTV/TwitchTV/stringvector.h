@@ -92,7 +92,7 @@ namespace twitch_messages
 		d->array_size = 100;
 		d->n_count = 0;
 		d->msg = new char*[d->array_size];
-		d->duplicate[d->array_size] = 0;
+		//d->duplicate[d->array_size] = 0;
 	}
 
 	void resize(data *d)
