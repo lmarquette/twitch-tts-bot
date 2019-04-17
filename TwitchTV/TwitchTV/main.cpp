@@ -86,14 +86,14 @@ int main(int argc, char **argv)
 		//print received messages from all channels
 		for (int i = 0; i < incoming.n_count; i++)
 		{
-			//printf("%s@%s|(%.2f)->%s\n", incoming.username[i], incoming.channel[i], (double)timestamp / CLOCKS_PER_SEC, incoming.message[i]);
+			/*printf("%s@%s|(%.2f)->%s\n", incoming.username[i], incoming.channel[i], (double)timestamp / CLOCKS_PER_SEC, incoming.message[i]);
 			//printf("message length: %d\n", strlen(incoming.message[i]));
-			/*if (strcmp("!test\r", incoming.message[i]) == 0)
+			//if (strcmp("!test\r", incoming.message[i]) == 0)
 			{
 				Twitch::send_Message(&connection, "guildude", "test received");
 				Sleep(1000);
-			}*/
-			/*
+			}
+			
 			char *ret = strstr(incoming.message[i], "recipe"); //strstr checks inside a string for the specific word
 			if (ret != NULL)
 			{
@@ -121,7 +121,7 @@ int main(int argc, char **argv)
 			{
 				Sleep(1000);
 				char tmp[512];
-				sprintf(tmp, "Hello @%s this is leo%d", incoming.username[i], rand() % 256); //%s points towards a string, %d points towards random numbers
+				sprintf(tmp, "Hello @%s this is leo%d", incoming.username[i], rand() % 256); 
 
 				Twitch::send_Message(&connection, "guildude", tmp);
 				//cout << "Time: " << time << endl;
@@ -130,8 +130,15 @@ int main(int argc, char **argv)
 			//cout << "Time: " << time_passed << endl;
 
 			//retrieve messages from twitch
-			printf("%s@%s|(%.2f)->%s\n", incoming.username[i], incoming.channel[i], (double)timestamp / CLOCKS_PER_SEC, incoming.message[i]);
+			//printf("%s@%s|(%.2f)->%s\n", incoming.username[i], incoming.channel[i], (double)timestamp / CLOCKS_PER_SEC, incoming.message[i]);
 			
+			if (incoming.username[i] == "guildude")
+			{
+				printf("%s: %s", incoming.username[i], incoming.message[i]);
+				mbstowcs(wstr, incoming.message[i], buffer_size); //convert twitch messages into wide character
+				pVoice->Speak(wstr, SVSFlagsAsync | SVSFPurgeBeforeSpeak, NULL); //output twitch messages 
+			}
+
 			mbstowcs(wstr, incoming.message[i], buffer_size); //convert twitch messages into wide character
 			pVoice->Speak(wstr, SVSFlagsAsync | SVSFPurgeBeforeSpeak, NULL); //output twitch messages 
 			
