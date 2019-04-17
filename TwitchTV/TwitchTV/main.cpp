@@ -38,6 +38,8 @@ int main(int argc, char **argv)
 	ISpVoice * pVoice = NULL;
 	initialize_tts(&pVoice);
 	wchar_t wstr[buffer_size];
+	
+	long long currency = 100; //replace this with donation amount converted into pennies
 
 	//initialize network
 	Twitch::startup();
@@ -50,7 +52,7 @@ int main(int argc, char **argv)
 	Twitch::connect(&connection);
 
 	//join a channel
-	Twitch::join_Channel(&connection, "riotgames");
+	Twitch::join_Channel(&connection, "guildude");
 
 	//incoming message list from all connected channels
 	Twitch::Message::Table incoming;
@@ -71,7 +73,6 @@ int main(int argc, char **argv)
 	printf("chat log\n");	
 	for (;;)
 	{
-		
 		srand(time(0));
 		unsigned int timestamp = clock();
 
@@ -131,17 +132,35 @@ int main(int argc, char **argv)
 
 			//retrieve messages from twitch
 			//printf("%s@%s|(%.2f)->%s\n", incoming.username[i], incoming.channel[i], (double)timestamp / CLOCKS_PER_SEC, incoming.message[i]);
+
+			int res = strcmp("guildude", incoming.username[i]); //replace my username with text of donater 
 			
-			if (incoming.username[i] == "guildude")
+			//Note to self, make sure symbols don't deduct from currency
+			if (res == 0)
 			{
-				printf("%s: %s", incoming.username[i], incoming.message[i]);
-				mbstowcs(wstr, incoming.message[i], buffer_size); //convert twitch messages into wide character
-				pVoice->Speak(wstr, SVSFlagsAsync | SVSFPurgeBeforeSpeak, NULL); //output twitch messages 
+				cout << "currency: " << currency << endl;
+				cout << "strlen: " << strlen(incoming.message[i]) - 1 << endl;
+				currency -= (strlen(incoming.message[i]) - 1);
+				cout << "currency: " << currency << endl;
+
+				pVoice->GetStatus(&status, NULL);
+
+				if (currency < 0)
+				{
+					cout << "You have gone past your character limit" << endl; //replace this with an actual twitch message sent
+				}
+				else if (currency > 0)
+				{
+					cerr << currency << endl; //deduct 1 from strlen to get exact char value
+					mbstowcs(wstr, incoming.message[i], buffer_size); //convert twitch messages into wide character
+					pVoice->Speak(wstr, SVSFlagsAsync | SVSFPurgeBeforeSpeak, NULL); //output twitch messages 
+				}
+			}
+			else
+			{
+				cout << "Failed";
 			}
 
-			mbstowcs(wstr, incoming.message[i], buffer_size); //convert twitch messages into wide character
-			pVoice->Speak(wstr, SVSFlagsAsync | SVSFPurgeBeforeSpeak, NULL); //output twitch messages 
-			
 			//tokenize messages
 			char *delimiters = " .,!\n\r?";
 			char tmp_msg[512];
