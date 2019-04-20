@@ -67,7 +67,8 @@ int main(int argc, char **argv)
 	int t2 = clock();
 	double time_passed = (t2 - t1) / (double)CLOCKS_PER_SEC;
 
-	
+	char tmp[1000];
+	int counter = 0;
 	bool runTime = true;
 
 	printf("chat log\n");	
@@ -138,12 +139,13 @@ int main(int argc, char **argv)
 			//Note to self, make sure symbols don't deduct from currency
 			if (res == 0)
 			{
+				/*
 				cout << "currency: " << currency << endl;
 				cout << "strlen: " << strlen(incoming.message[i]) - 1 << endl;
 				currency -= (strlen(incoming.message[i]) - 1);
 				cout << "currency: " << currency << endl;
-
-				pVoice->GetStatus(&status, NULL);
+				*/
+				//pVoice->GetStatus(&status, NULL);
 
 				if (currency < 0)
 				{
@@ -151,7 +153,15 @@ int main(int argc, char **argv)
 				}
 				else if (currency > 0)
 				{
-					cerr << currency << endl; //deduct 1 from strlen to get exact char value
+					strcpy(tmp, incoming.message[i]);
+					for (int i = 0; i < strlen(tmp); i++)
+					{
+						cout << tmp[i];
+						if (tmp[i] != ' ') counter++;
+					}
+					cout << endl;
+					cout << counter << endl;
+					cout << incoming.message[i] << endl; //deduct 1 from strlen to get exact char value
 					mbstowcs(wstr, incoming.message[i], buffer_size); //convert twitch messages into wide character
 					pVoice->Speak(wstr, SVSFlagsAsync | SVSFPurgeBeforeSpeak, NULL); //output twitch messages 
 				}

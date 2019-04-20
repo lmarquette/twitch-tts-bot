@@ -3,5 +3,6 @@ e:\github\twitch-tts-bot\twitchtv\twitchtv\twitchcode.h(205): warning C4244: '*=
 e:\github\twitch-tts-bot\twitchtv\twitchtv\stringvector.h(23): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
 e:\github\twitch-tts-bot\twitchtv\twitchtv\stringvector.h(61): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
 e:\github\twitch-tts-bot\twitchtv\twitchtv\stringvector.h(100): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
-e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(76): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(77): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(157): warning C4018: '<': signed/unsigned mismatch
   TwitchTV.vcxproj -> E:\Github\twitch-tts-bot\TwitchTV\Debug\TwitchTV.exe
