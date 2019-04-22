@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 	initialize_tts(&pVoice);
 	wchar_t wstr[buffer_size];
 	
-	long long currency = 100; //replace this with donation amount converted into pennies
+	long long currency = 10000; //replace this with donation amount converted into pennies
 
 	//initialize network
 	Twitch::startup();
