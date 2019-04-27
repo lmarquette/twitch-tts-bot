@@ -48,8 +48,23 @@ void initialize_tts(ISpVoice** pVoice)
 namespace Init
 {
 	SDL_Renderer *renderer = NULL;
-	int screen_width = 800;
-	int screen_height = 600;
+	int screen_width = 1920;
+	int screen_height = 1080;
+
+	//Set background color on window
+
+	void initialize_SDL()
+	{
+		SDL_Init(SDL_INIT_VIDEO);
+
+		SDL_Window *window = SDL_CreateWindow("Twitch Overlay", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Init::screen_width, Init::screen_height, SDL_WINDOW_SHOWN);
+		Init::renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+
+		SDL_SetRenderDrawColor(Init::renderer, 0, 0, 0, 255);
+
+		SDL_RenderClear(Init::renderer);
+	}
 }
 
 int main(int argc, char **argv)
@@ -59,18 +74,18 @@ int main(int argc, char **argv)
 	initialize_tts(&pVoice);
 	wchar_t wstr[buffer_size];
 
-	char copy_string[buffer_size];
-	
 	long long currency = 100; //replace this with donation amount converted into pennies
 
 	char* paid_tts = (char*)malloc(sizeof(char) * buffer_size);
 
-	//initialize SDL
-	SDL_Init(SDL_INIT_VIDEO);
-	srand(time(0));
+	//initialize Twitch Message Copy Over
+	unsigned int copy_n_count = 0;
+	unsigned int copy_buffer = 1000; 
+	char **copy_message = new char*[copy_buffer];
 
-	SDL_Window *window = SDL_CreateWindow("Twitch Overlay", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Init::screen_width, Init::screen_height, SDL_WINDOW_SHOWN);
-	Init::renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	//initialize SDL
+	Init::initialize_SDL();
+	srand(time(0));
 
 	//initialize network
 	Twitch::startup();
@@ -131,7 +146,6 @@ int main(int argc, char **argv)
 			}
 		}
 		
-		
 		//collect all messages from all channels
 			//pretty sure ths is not how you spell COMMUNICATE
 		Twitch::communicate(&incoming, &connection, timestamp);
@@ -141,52 +155,17 @@ int main(int argc, char **argv)
 			break;
 		}
 
+		//printf("number of messages: %d\n", incoming.n_count);
+
+		//incoming.n_count = 1;
+		//incoming.message[0] = "hello";
+
 		//print received messages from all channels
 		for (int i = 0; i < incoming.n_count; i++)
 		{
-			/*printf("%s@%s|(%.2f)->%s\n", incoming.username[i], incoming.channel[i], (double)timestamp / CLOCKS_PER_SEC, incoming.message[i]);
-			//printf("message length: %d\n", strlen(incoming.message[i]));
-			//if (strcmp("!test\r", incoming.message[i]) == 0)
-			{
-				Twitch::send_Message(&connection, "guildude", "test received");
-				Sleep(1000);
-			}
-			
-			char *ret = strstr(incoming.message[i], "recipe"); //strstr checks inside a string for the specific word
-			if (ret != NULL)
-			{
-				Sleep(2000);
-				char tmp[512];
-				sprintf(tmp, "Chef Ramsey says you should %s the %s", actions.str[rand() % actions.n_count], recipe.str[rand() % actions.n_count]);
-
-				Twitch::send_Message(&connection, "guildude", tmp);
-			}
-			char *name = strstr(incoming.message[i], "name");
-			if (name != NULL)
-			{
-				TrackNames::add(&track_names, incoming.username[i]);
-				if (incoming.username[i] != track_names.name[i])
-				{
-					Sleep(2000);
-					char name_tmp[512];
-					sprintf(name_tmp, "@%s our twitch overlords demand you sacrifice a meme to the meme gods.", incoming.username[i]);
-
-					Twitch::send_Message(&connection, "guildude", name_tmp);
-				}
-			}*/
-
-			if (strcmp("!who\r", incoming.message[i]) == 0)
-			{
-				Sleep(1000);
-				char tmp[512];
-				sprintf(tmp, "Hello @%s this is leo%d", incoming.username[i], rand() % 256); 
-
-				Twitch::send_Message(&connection, "guildude", tmp);
-				//cout << "Time: " << time << endl;
-
-			}
-			//cout << "Time: " << time_passed << endl;
-
+			copy_message[copy_n_count] = (char*)malloc(sizeof(char) * copy_buffer);
+			strcpy(copy_message[copy_n_count], incoming.message[i]);
+			copy_n_count++;
 			//retrieve messages from twitch
 			//printf("%s@%s|(%.2f)->%s\n", incoming.username[i], incoming.channel[i], (double)timestamp / CLOCKS_PER_SEC, incoming.message[i]);
 
@@ -200,7 +179,7 @@ int main(int argc, char **argv)
 				cout << "strlen: " << strlen(incoming.message[i]) - 1 << endl;
 				currency -= (strlen(incoming.message[i]) - 1);
 				cout << "currency: " << currency << endl;*/
-			
+
 				//pVoice->GetStatus(&status, NULL);
 
 				if (currency < 0)
@@ -209,71 +188,60 @@ int main(int argc, char **argv)
 				}
 				else if (currency > 0)
 				{
-					printf("%s", incoming.message[i]);
+					//printf("%s", incoming.message[i]);
 					for (int j = 0; j < currency; j++)
 					{
 						strcpy(paid_tts, incoming.message[i]);
 					}
-					printf("%s", paid_tts);
+					//printf("%s", paid_tts);
 					//cerr << currency << endl; //deduct 1 from strlen to get exact char value
 					mbstowcs(wstr, incoming.message[i], buffer_size); //convert twitch messages into wide character
 					pVoice->Speak(wstr, SVSFlagsAsync | SVSFPurgeBeforeSpeak, NULL); //output twitch messages 
 				}
 			}
-			else
-			{
-				cout << "Failed";
-			}
-
-			for (int i = 0; i < 500; i++)
-			{
-				SDL_Rect src;
-				src.x = 64 * (incoming.message[i] % 16);
-				src.y = 64 * (incoming.message[i] / 16);
-				src.w = 64;
-				src.h = 64;
-
-				SDL_Rect dest;
-				dest.x = 0;
-				dest.y = 0;
-				dest.w = 56; //font size
-				dest.h = 56;
-
-				SDL_RenderCopyEx(Init::renderer, texture, &src, &dest, 0, NULL, SDL_FLIP_NONE);
-				dest.x += 56;
-			}
-
-			//tokenize messages
-			char *delimiters = " .,!\n\r?";
-			char tmp_msg[512];
-
-			strcpy(tmp_msg, incoming.message[i]);
-			char *token = strtok(tmp_msg, delimiters);
-
-			while (token != NULL)
-			{
-				//printf("%s\n", token);
-
-				//append words to a master list
-				twitch_messages::add(&twitch_msg, token);
-				token = strtok(NULL, delimiters);
-			}
-
-			sort(&twitch_msg);
-
-			//update
-			if (time_passed == 5)
-			{
-				sort(&twitch_msg);
-			}
+			
 		}
 
+		SDL_Rect dest;
+		dest.x = 0;
+		dest.y = 0;
+		dest.w = 56; //font size
+		dest.h = 56;
+		
+		for (int i= 0; i < copy_n_count; i++)
+		{
+			//cout << copy_message[1] << endl;
+			for (int j = 0; j < strlen(copy_message[i]); j++)
+			{
+				SDL_Rect src;
 
+				src.x = 64 * (copy_message[i][j] % 16);
+				src.y = 64 * (copy_message[i][j] / 16);
+				src.w = 64; 
+				src.h = 64;
 
-		//Set background color on window
-		SDL_SetRenderDrawColor(Init::renderer, 0, 0, 0, 255);
+				SDL_RenderCopyEx(Init::renderer, font_texture, &src, &dest, 0, NULL, SDL_FLIP_NONE);
+				dest.x += 56;
 
-		SDL_RenderClear(Init::renderer);
+				if (dest.x >= 1920 - 64)
+				{
+					dest.x = 0;
+					dest.y += 56;
+				}
+				if (dest.y >= 1080 - 64)
+				{
+					copy_n_count = 1;
+					dest.x = 0;
+					dest.y = 0;
+				}
+			}
+
+			dest.y += 56;
+			dest.x = 100;
+
+		}
+		
+		
 
 		/*
 		SDL_Rect image_rect;
