@@ -14,6 +14,19 @@
 #include <algorithm>
 using namespace std;
 
+#include "SDL2-2.0.9/include/SDL.h"
+#include "SDL2-2.0.9/include/SDL_image.h"
+
+#include "SDL2-2.0.9\include\SDL.h"
+#include "SDL2-2.0.9\include\SDL_image.h"
+
+#pragma comment(lib,"SDL2-2.0.9\\lib\\x86\\SDL2.lib")
+#pragma comment(lib,"SDL2-2.0.9\\lib\\x86\\SDL2main.lib")
+//copy the SDL2_image.lib from the SDL imaege folder to your SDL lib folder
+#pragma comment(lib,"SDL2-2.0.9\\lib\\x86\\SDL2_image.lib")
+
+#pragma comment(linker,"/subsystem:console")
+
 #include "twitchcode.h"
 #include "stringvector.h"
 //#include "ReadfromFile.h"
@@ -32,14 +45,32 @@ void initialize_tts(ISpVoice** pVoice)
 	CoCreateInstance(CLSID_SpVoice, NULL, CLSCTX_ALL, IID_ISpVoice, (void**)pVoice);
 }
 
+namespace Init
+{
+	SDL_Renderer *renderer = NULL;
+	int screen_width = 800;
+	int screen_height = 600;
+}
+
 int main(int argc, char **argv)
 {
 	//initialize tts
 	ISpVoice * pVoice = NULL;
 	initialize_tts(&pVoice);
 	wchar_t wstr[buffer_size];
+
+	char copy_string[buffer_size];
 	
-	long long currency = 10000; //replace this with donation amount converted into pennies
+	long long currency = 100; //replace this with donation amount converted into pennies
+
+	char* paid_tts = (char*)malloc(sizeof(char) * buffer_size);
+
+	//initialize SDL
+	SDL_Init(SDL_INIT_VIDEO);
+	srand(time(0));
+
+	SDL_Window *window = SDL_CreateWindow("Twitch Overlay", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Init::screen_width, Init::screen_height, SDL_WINDOW_SHOWN);
+	Init::renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
 	//initialize network
 	Twitch::startup();
@@ -67,8 +98,17 @@ int main(int argc, char **argv)
 	int t2 = clock();
 	double time_passed = (t2 - t1) / (double)CLOCKS_PER_SEC;
 
-	char tmp[1000];
-	int counter = 0;
+	SDL_Surface *tmp = IMG_Load("qt.jpg");
+	SDL_Texture *texture = SDL_CreateTextureFromSurface(Init::renderer, tmp);
+	SDL_FreeSurface(tmp);
+
+	SDL_Surface *font = IMG_Load("font_sheet.png"); //each char size is 49x46
+	SDL_Texture *font_texture = SDL_CreateTextureFromSurface(Init::renderer, font);
+	SDL_FreeSurface(font); //free surface since we pushed surface to texture
+
+	float fancy_x = 0;
+	float fancy_y = 0;
+	
 	bool runTime = true;
 
 	printf("chat log\n");	
@@ -77,7 +117,23 @@ int main(int argc, char **argv)
 		srand(time(0));
 		unsigned int timestamp = clock();
 
+		unsigned int current_time = SDL_GetTicks();
+
+		unsigned int last_text_change_tiem = SDL_GetTicks();
+
+		//consume all window events first
+		SDL_Event event;
+		while (SDL_PollEvent(&event))
+		{
+			if (event.type == SDL_QUIT)
+			{
+				break;
+			}
+		}
+		
+		
 		//collect all messages from all channels
+			//pretty sure ths is not how you spell COMMUNICATE
 		Twitch::communicate(&incoming, &connection, timestamp);
 		if (connection.active == false)
 		{
@@ -139,12 +195,12 @@ int main(int argc, char **argv)
 			//Note to self, make sure symbols don't deduct from currency
 			if (res == 0)
 			{
-				/*
-				cout << "currency: " << currency << endl;
+				//printf("%s", incoming.message[i]);
+				/*cout << "currency: " << currency << endl;
 				cout << "strlen: " << strlen(incoming.message[i]) - 1 << endl;
 				currency -= (strlen(incoming.message[i]) - 1);
-				cout << "currency: " << currency << endl;
-				*/
+				cout << "currency: " << currency << endl;*/
+			
 				//pVoice->GetStatus(&status, NULL);
 
 				if (currency < 0)
@@ -153,15 +209,13 @@ int main(int argc, char **argv)
 				}
 				else if (currency > 0)
 				{
-					strcpy(tmp, incoming.message[i]);
-					for (int i = 0; i < strlen(tmp); i++)
+					printf("%s", incoming.message[i]);
+					for (int j = 0; j < currency; j++)
 					{
-						cout << tmp[i];
-						if (tmp[i] != ' ') counter++;
+						strcpy(paid_tts, incoming.message[i]);
 					}
-					cout << endl;
-					cout << counter << endl;
-					cout << incoming.message[i] << endl; //deduct 1 from strlen to get exact char value
+					printf("%s", paid_tts);
+					//cerr << currency << endl; //deduct 1 from strlen to get exact char value
 					mbstowcs(wstr, incoming.message[i], buffer_size); //convert twitch messages into wide character
 					pVoice->Speak(wstr, SVSFlagsAsync | SVSFPurgeBeforeSpeak, NULL); //output twitch messages 
 				}
@@ -169,6 +223,24 @@ int main(int argc, char **argv)
 			else
 			{
 				cout << "Failed";
+			}
+
+			for (int i = 0; i < 500; i++)
+			{
+				SDL_Rect src;
+				src.x = 64 * (incoming.message[i] % 16);
+				src.y = 64 * (incoming.message[i] / 16);
+				src.w = 64;
+				src.h = 64;
+
+				SDL_Rect dest;
+				dest.x = 0;
+				dest.y = 0;
+				dest.w = 56; //font size
+				dest.h = 56;
+
+				SDL_RenderCopyEx(Init::renderer, texture, &src, &dest, 0, NULL, SDL_FLIP_NONE);
+				dest.x += 56;
 			}
 
 			//tokenize messages
@@ -195,8 +267,63 @@ int main(int argc, char **argv)
 				sort(&twitch_msg);
 			}
 		}
-	
+
+
+
+		//Set background color on window
+		SDL_SetRenderDrawColor(Init::renderer, 0, 0, 0, 255);
+
+		SDL_RenderClear(Init::renderer);
+
+		/*
+		SDL_Rect image_rect;
+		image_rect.x = 600;
+		image_rect.y = 600;
+		image_rect.w = 60;
+		image_rect.h = 60;
+
+		SDL_Rect screen_rect;
+		screen_rect.x = 50;
+		screen_rect.y = 50;
+		screen_rect.w = 240;
+		screen_rect.h = 240;
+		SDL_RenderCopyEx(Init::renderer, texture, &image_rect, &screen_rect, 0, NULL, SDL_FLIP_NONE);
+
+		screen_rect.x = 300;
+		screen_rect.y = 300;
+		screen_rect.w = 60;
+		screen_rect.h = 60;
+		SDL_RenderCopyEx(Init::renderer, texture, &image_rect, &screen_rect, 0, NULL, SDL_FLIP_NONE);
+
+
+		fancy_x += 0.01;
+		fancy_y += 0.01;
+
+		image_rect.x = fancy_x;
+		image_rect.y = fancy_y;
+		image_rect.w = 60;
+		image_rect.h = 60;
+
+		screen_rect.x = 300;
+		screen_rect.y = 500;
+		screen_rect.w = 60;
+		screen_rect.h = 60;
+		SDL_RenderCopyEx(Init::renderer, texture, &image_rect, &screen_rect, 0, NULL, SDL_FLIP_NONE);
+		*/
+		/*
+		if (current_time - last_text_change_tiem > 1000) //1000 is 1 frame per second
+		{
+			last_text_change_tiem = current_time;
+
+			for (int i = 0; i < 16; i++)
+			{
+				//incoming.message[i] = 'a' +
+			}
+		}*/
+
+		SDL_RenderPresent(Init::renderer);
 	}
 
 	getchar();
+	return 0;
 }

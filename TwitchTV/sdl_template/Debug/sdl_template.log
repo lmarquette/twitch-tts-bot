@@ -1,0 +1,6 @@
+﻿  main_SDL_sprites_and_text.cpp
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\sdl_template\main_sdl_sprites_and_text.cpp(45): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\sdl_template\main_sdl_sprites_and_text.cpp(156): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\sdl_template\main_sdl_sprites_and_text.cpp(174): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\sdl_template\main_sdl_sprites_and_text.cpp(175): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+  sdl_template.vcxproj -> C:\Users\Kouhai\Documents\GitHub\twitch-tts-bot\TwitchTV\sdl_template\Debug\sdl_template.exe
