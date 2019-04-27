@@ -80,8 +80,16 @@ int main(int argc, char **argv)
 
 	//initialize Twitch Message Copy Over
 	unsigned int copy_n_count = 0;
+	unsigned int current_copy_index = 0;
+	unsigned int number_of_copies_to_show = 7;
+
 	unsigned int copy_buffer = 1000; 
 	char **copy_message = new char*[copy_buffer];
+	char **copy_username = new char*[copy_buffer];
+
+	long int *y_pos = new long int[1000];
+
+	copy_n_count = number_of_copies_to_show;
 
 	//initialize SDL
 	Init::initialize_SDL();
@@ -98,7 +106,7 @@ int main(int argc, char **argv)
 	Twitch::connect(&connection);
 
 	//join a channel
-	Twitch::join_Channel(&connection, "guildude");
+	Twitch::join_Channel(&connection, "ninja");
 
 	//incoming message list from all connected channels
 	Twitch::Message::Table incoming;
@@ -145,7 +153,7 @@ int main(int argc, char **argv)
 				break;
 			}
 		}
-		
+
 		//collect all messages from all channels
 			//pretty sure ths is not how you spell COMMUNICATE
 		Twitch::communicate(&incoming, &connection, timestamp);
@@ -164,13 +172,16 @@ int main(int argc, char **argv)
 		for (int i = 0; i < incoming.n_count; i++)
 		{
 			copy_message[copy_n_count] = (char*)malloc(sizeof(char) * copy_buffer);
+			copy_username[copy_n_count] = (char*)malloc(sizeof(char) * copy_buffer);
+			strcpy(copy_username[copy_n_count], incoming.username[i]);
 			strcpy(copy_message[copy_n_count], incoming.message[i]);
 			copy_n_count++;
+			current_copy_index++;
 			//retrieve messages from twitch
 			//printf("%s@%s|(%.2f)->%s\n", incoming.username[i], incoming.channel[i], (double)timestamp / CLOCKS_PER_SEC, incoming.message[i]);
 
 			int res = strcmp("guildude", incoming.username[i]); //replace my username with text of donater 
-			
+
 			//Note to self, make sure symbols don't deduct from currency
 			if (res == 0)
 			{
@@ -199,49 +210,71 @@ int main(int argc, char **argv)
 					pVoice->Speak(wstr, SVSFlagsAsync | SVSFPurgeBeforeSpeak, NULL); //output twitch messages 
 				}
 			}
-			
+
 		}
+
+
+		SDL_RenderClear(Init::renderer);
 
 		SDL_Rect dest;
 		dest.x = 0;
 		dest.y = 0;
 		dest.w = 56; //font size
 		dest.h = 56;
-		
-		for (int i= 0; i < copy_n_count; i++)
+
+		//hard cap how many characters can scroll across the screen
+
+		for (int i = current_copy_index; i < current_copy_index+number_of_copies_to_show; i++)
 		{
-			//cout << copy_message[1] << endl;
+			//output username
+			SDL_Rect src;
+			for (int j = 0; j < strlen(copy_username[i]); j++)
+			{
+				
+				src.x = 64 * (copy_username[i][j] % 16); //column
+				src.y = 64 * (copy_username[i][j] / 16); //row
+				src.w = 64;
+				src.h = 64;
+				SDL_RenderCopyEx(Init::renderer, font_texture, &src, &dest, 0, NULL, SDL_FLIP_NONE);
+
+				dest.x += 40;
+
+			}
+
+			src.x = 64 * 10;
+			src.y = 64 * 3;
+			SDL_RenderCopyEx(Init::renderer, font_texture, &src, &dest, 0, NULL, SDL_FLIP_NONE);
+
+			dest.x += 60;
+			//output their message
 			for (int j = 0; j < strlen(copy_message[i]); j++)
 			{
-				SDL_Rect src;
-
 				src.x = 64 * (copy_message[i][j] % 16);
 				src.y = 64 * (copy_message[i][j] / 16);
-				src.w = 64; 
-				src.h = 64;
-
+	
 				SDL_RenderCopyEx(Init::renderer, font_texture, &src, &dest, 0, NULL, SDL_FLIP_NONE);
-				dest.x += 56;
 
-				if (dest.x >= 1920 - 64)
+				dest.x += 40;
+
+				if (dest.x >= Init::screen_width - 64)
 				{
 					dest.x = 0;
 					dest.y += 56;
 				}
-				if (dest.y >= 1080 - 64)
+				if (dest.y >= Init::screen_height - 64)
 				{
-					copy_n_count = 1;
 					dest.x = 0;
 					dest.y = 0;
+					
 				}
 			}
 
-			dest.y += 56;
-			dest.x = 100;
+			dest.y += 56; //new line
+			dest.x = 0; //set font back to beginning
 
 		}
-		
-		
+
+
 
 		/*
 		SDL_Rect image_rect;
@@ -291,7 +324,7 @@ int main(int argc, char **argv)
 
 		SDL_RenderPresent(Init::renderer);
 	}
-
+	
 	getchar();
 	return 0;
 }
