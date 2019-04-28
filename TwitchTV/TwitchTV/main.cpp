@@ -72,10 +72,7 @@ namespace Data
 		{
 			SDL_Surface *tmp = IMG_Load(meme_filenames[i]);
 			meme_textures[i] = SDL_CreateTextureFromSurface(renderer, tmp);
-			if (meme_textures[i] == NULL)
-			{
-				cout << meme_filenames[i] << " failed to load" << endl;
-			}
+			if (meme_textures[i] == NULL) cout << meme_filenames[i] << " failed to load" << endl;
 			SDL_FreeSurface(tmp);
 		}
 	}
@@ -97,6 +94,7 @@ namespace Data
 	void Draw_Memes(char* parse_meme)
 	{
 		char* compare;
+		double creation_time;
 		//SDL_Surface *memes = IMG_Load(meme_name".jpg");
 		//SDL_Texture *texture = SDL_CreateTextureFromSurface(Data::renderer, memes);
 		//SDL_FreeSurface(memes);
@@ -283,7 +281,7 @@ int main(int argc, char **argv)
 			}
 		}
 	
-		//SDL_RenderClear(Data::renderer);
+		SDL_RenderClear(Data::renderer);
 
 		SDL_Rect dest;
 		dest.x = 0;
