@@ -3,10 +3,10 @@ c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\twitchcode.h(2
 c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\stringvector.h(23): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
 c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\stringvector.h(61): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
 c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\stringvector.h(100): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
-c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(92): warning C4018: '<': signed/unsigned mismatch
-c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(101): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(145): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(230): warning C4018: '<': signed/unsigned mismatch
-c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(234): warning C4018: '<': signed/unsigned mismatch
-c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(253): warning C4018: '<': signed/unsigned mismatch
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(94): warning C4018: '<': signed/unsigned mismatch
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(104): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(180): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(267): warning C4018: '<': signed/unsigned mismatch
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(271): warning C4018: '<': signed/unsigned mismatch
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(290): warning C4018: '<': signed/unsigned mismatch
   TwitchTV.vcxproj -> C:\Users\Kouhai\Documents\GitHub\twitch-tts-bot\TwitchTV\TwitchTV\Debug\TwitchTV.exe

@@ -65,6 +65,7 @@ namespace Init
 
 		SDL_RenderClear(Init::renderer);
 	}
+
 }
 
 int main(int argc, char **argv)
@@ -89,6 +90,13 @@ int main(int argc, char **argv)
 
 	long int *y_pos = new long int[1000];
 
+	
+	for (int i = 0; i < number_of_copies_to_show; i++)
+	{
+		copy_username[i] = "me";
+		copy_message[i] = "hello";
+	}
+
 	copy_n_count = number_of_copies_to_show;
 
 	//initialize SDL
@@ -106,7 +114,7 @@ int main(int argc, char **argv)
 	Twitch::connect(&connection);
 
 	//join a channel
-	Twitch::join_Channel(&connection, "ninja");
+	Twitch::join_Channel(&connection, "chap");
 
 	//incoming message list from all connected channels
 	Twitch::Message::Table incoming;
@@ -124,6 +132,42 @@ int main(int argc, char **argv)
 	SDL_Surface *tmp = IMG_Load("qt.jpg");
 	SDL_Texture *texture = SDL_CreateTextureFromSurface(Init::renderer, tmp);
 	SDL_FreeSurface(tmp);
+
+	SDL_Surface *feelsbadman = IMG_Load("feelsbadman.png");
+	SDL_Texture *feelsbadman_texture = SDL_CreateTextureFromSurface(Init::renderer, feelsbadman);
+	SDL_FreeSurface(feelsbadman);
+
+	SDL_Surface *monkaS = IMG_Load("monkaS.png");
+	SDL_Texture *monkaS_texture = SDL_CreateTextureFromSurface(Init::renderer, monkaS);
+	SDL_FreeSurface(monkaS);
+
+	SDL_Surface *kappa = IMG_Load("kappa.jpg");
+	SDL_Texture *kappa_texture = SDL_CreateTextureFromSurface(Init::renderer, kappa);
+	SDL_FreeSurface(kappa);
+
+	SDL_Surface *kreygasm = IMG_Load("kreygasm.png");
+	SDL_Texture *kreygasm_texture = SDL_CreateTextureFromSurface(Init::renderer, kreygasm);
+	SDL_FreeSurface(kreygasm);
+
+	SDL_Surface *lul = IMG_Load("lul.jpg");
+	SDL_Texture *lul_texture = SDL_CreateTextureFromSurface(Init::renderer, lul);
+	SDL_FreeSurface(lul);
+
+	SDL_Surface *omegalul = IMG_Load("omegalul.png");
+	SDL_Texture *omegalul_texture = SDL_CreateTextureFromSurface(Init::renderer, omegalul);
+	SDL_FreeSurface(omegalul);
+
+	SDL_Surface *poggers = IMG_Load("poggers.png");
+	SDL_Texture *poggers_texture = SDL_CreateTextureFromSurface(Init::renderer, poggers);
+	SDL_FreeSurface(poggers);
+
+	SDL_Surface *pogchamp = IMG_Load("pogchamp.png");
+	SDL_Texture *pogchamp_texture = SDL_CreateTextureFromSurface(Init::renderer, pogchamp);
+	SDL_FreeSurface(pogchamp);
+
+	SDL_Surface *residentsleeper = IMG_Load( "residentsleeper.png");
+	SDL_Texture *residentsleeper_texture = SDL_CreateTextureFromSurface(Init::renderer, residentsleeper);
+	SDL_FreeSurface(residentsleeper);
 
 	SDL_Surface *font = IMG_Load("font_sheet.png"); //each char size is 49x46
 	SDL_Texture *font_texture = SDL_CreateTextureFromSurface(Init::renderer, font);
@@ -213,7 +257,7 @@ int main(int argc, char **argv)
 
 		}
 
-
+		SDL_SetRenderDrawColor(Init::renderer, 255, 0, 0, 255);
 		SDL_RenderClear(Init::renderer);
 
 		SDL_Rect dest;
@@ -230,7 +274,6 @@ int main(int argc, char **argv)
 			SDL_Rect src;
 			for (int j = 0; j < strlen(copy_username[i]); j++)
 			{
-				
 				src.x = 64 * (copy_username[i][j] % 16); //column
 				src.y = 64 * (copy_username[i][j] / 16); //row
 				src.w = 64;
@@ -238,7 +281,6 @@ int main(int argc, char **argv)
 				SDL_RenderCopyEx(Init::renderer, font_texture, &src, &dest, 0, NULL, SDL_FLIP_NONE);
 
 				dest.x += 40;
-
 			}
 
 			src.x = 64 * 10;
@@ -265,7 +307,6 @@ int main(int argc, char **argv)
 				{
 					dest.x = 0;
 					dest.y = 0;
-					
 				}
 			}
 
