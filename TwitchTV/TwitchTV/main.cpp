@@ -45,28 +45,83 @@ void initialize_tts(ISpVoice** pVoice)
 	CoCreateInstance(CLSID_SpVoice, NULL, CLSCTX_ALL, IID_ISpVoice, (void**)pVoice);
 }
 
-namespace Init
+namespace Data
 {
 	SDL_Renderer *renderer = NULL;
 	int screen_width = 1920;
 	int screen_height = 1080;
+	const int num_memes = 10;
+	const int meme_buffer = 10000;
+	SDL_Texture **meme_textures = (SDL_Texture**)malloc(sizeof(SDL_Texture*) * meme_buffer);
 
-	//Set background color on window
+	//parse array for these words
+	char* memes[num_memes] = { "feelsbadman", "kappa", "kreygasm", "lul",
+		"monkaS", "omegalul", "pogchamp", "poggers", 
+		"residentsleeper", "wesmart" };
+
+	//filenames
+	char* meme_filenames[num_memes] = { "feelsbadman.png", "kappa.jpg", "kreygasm.png", 
+		"lul.jpg", "monkaS.png", "omegalul.png", "pogchamp.jpg", "poggers.png", 
+		"residentsleeper.png", "wesmart.png" };
+
+
+
+	void intialize_Memes()
+	{
+		for (int i = 0; i < num_memes; i++)
+		{
+			SDL_Surface *tmp = IMG_Load(meme_filenames[i]);
+			meme_textures[i] = SDL_CreateTextureFromSurface(renderer, tmp);
+			if (meme_textures[i] == NULL)
+			{
+				cout << meme_filenames[i] << " failed to load" << endl;
+			}
+			SDL_FreeSurface(tmp);
+		}
+	}
 
 	void initialize_SDL()
 	{
 		SDL_Init(SDL_INIT_VIDEO);
 
-		SDL_Window *window = SDL_CreateWindow("Twitch Overlay", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Init::screen_width, Init::screen_height, SDL_WINDOW_SHOWN);
-		Init::renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+		SDL_Window *window = SDL_CreateWindow("Twitch Overlay", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Data::screen_width, Data::screen_height, SDL_WINDOW_SHOWN);
+		Data::renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
+		//Set background color on window
+		//Set color to what the screen is ignoring 
+		SDL_SetRenderDrawColor(Data::renderer, 0, 255, 0, 255); 
+		SDL_RenderClear(Data::renderer);
 
-		SDL_SetRenderDrawColor(Init::renderer, 0, 0, 0, 255);
-
-		SDL_RenderClear(Init::renderer);
 	}
 
+	void Draw_Memes(char* parse_meme)
+	{
+		char* compare;
+		//SDL_Surface *memes = IMG_Load(meme_name".jpg");
+		//SDL_Texture *texture = SDL_CreateTextureFromSurface(Data::renderer, memes);
+		//SDL_FreeSurface(memes);
+		cout << "Let's draw!" << endl;
+		SDL_Rect screen_pos;
+		screen_pos.x = 400;
+		screen_pos.y = 400;
+		screen_pos.w = 1000;
+		screen_pos.h = 1000;
+		for (int i = 0; i < num_memes; i++)
+		{
+			compare = strstr(parse_meme, memes[i]);
+			if(compare != NULL)
+			{
+				cout << "What are we parsing: " << meme_textures[i] << endl;
+				SDL_RenderCopyEx(renderer, meme_textures[i], NULL, &screen_pos, 0, NULL, SDL_FLIP_NONE);
+				//screen_pos.x += 1;
+			}
+		}
+
+	}
+
+
 }
+
 
 int main(int argc, char **argv)
 {
@@ -90,7 +145,9 @@ int main(int argc, char **argv)
 
 	long int *y_pos = new long int[1000];
 
-	
+	char *compare;
+
+	//figure out how to remove this
 	for (int i = 0; i < number_of_copies_to_show; i++)
 	{
 		copy_username[i] = "me";
@@ -100,8 +157,11 @@ int main(int argc, char **argv)
 	copy_n_count = number_of_copies_to_show;
 
 	//initialize SDL
-	Init::initialize_SDL();
+	Data::initialize_SDL();
 	srand(time(0));
+
+	//initialize Memes
+	Data::intialize_Memes();
 
 	//initialize network
 	Twitch::startup();
@@ -114,7 +174,7 @@ int main(int argc, char **argv)
 	Twitch::connect(&connection);
 
 	//join a channel
-	Twitch::join_Channel(&connection, "chap");
+	Twitch::join_Channel(&connection, "guildude");
 
 	//incoming message list from all connected channels
 	Twitch::Message::Table incoming;
@@ -128,49 +188,9 @@ int main(int argc, char **argv)
 	int t1 = clock();
 	int t2 = clock();
 	double time_passed = (t2 - t1) / (double)CLOCKS_PER_SEC;
-
-	SDL_Surface *tmp = IMG_Load("qt.jpg");
-	SDL_Texture *texture = SDL_CreateTextureFromSurface(Init::renderer, tmp);
-	SDL_FreeSurface(tmp);
-
-	SDL_Surface *feelsbadman = IMG_Load("feelsbadman.png");
-	SDL_Texture *feelsbadman_texture = SDL_CreateTextureFromSurface(Init::renderer, feelsbadman);
-	SDL_FreeSurface(feelsbadman);
-
-	SDL_Surface *monkaS = IMG_Load("monkaS.png");
-	SDL_Texture *monkaS_texture = SDL_CreateTextureFromSurface(Init::renderer, monkaS);
-	SDL_FreeSurface(monkaS);
-
-	SDL_Surface *kappa = IMG_Load("kappa.jpg");
-	SDL_Texture *kappa_texture = SDL_CreateTextureFromSurface(Init::renderer, kappa);
-	SDL_FreeSurface(kappa);
-
-	SDL_Surface *kreygasm = IMG_Load("kreygasm.png");
-	SDL_Texture *kreygasm_texture = SDL_CreateTextureFromSurface(Init::renderer, kreygasm);
-	SDL_FreeSurface(kreygasm);
-
-	SDL_Surface *lul = IMG_Load("lul.jpg");
-	SDL_Texture *lul_texture = SDL_CreateTextureFromSurface(Init::renderer, lul);
-	SDL_FreeSurface(lul);
-
-	SDL_Surface *omegalul = IMG_Load("omegalul.png");
-	SDL_Texture *omegalul_texture = SDL_CreateTextureFromSurface(Init::renderer, omegalul);
-	SDL_FreeSurface(omegalul);
-
-	SDL_Surface *poggers = IMG_Load("poggers.png");
-	SDL_Texture *poggers_texture = SDL_CreateTextureFromSurface(Init::renderer, poggers);
-	SDL_FreeSurface(poggers);
-
-	SDL_Surface *pogchamp = IMG_Load("pogchamp.png");
-	SDL_Texture *pogchamp_texture = SDL_CreateTextureFromSurface(Init::renderer, pogchamp);
-	SDL_FreeSurface(pogchamp);
-
-	SDL_Surface *residentsleeper = IMG_Load( "residentsleeper.png");
-	SDL_Texture *residentsleeper_texture = SDL_CreateTextureFromSurface(Init::renderer, residentsleeper);
-	SDL_FreeSurface(residentsleeper);
-
+	
 	SDL_Surface *font = IMG_Load("font_sheet.png"); //each char size is 49x46
-	SDL_Texture *font_texture = SDL_CreateTextureFromSurface(Init::renderer, font);
+	SDL_Texture *font_texture = SDL_CreateTextureFromSurface(Data::renderer, font);
 	SDL_FreeSurface(font); //free surface since we pushed surface to texture
 
 	float fancy_x = 0;
@@ -255,10 +275,15 @@ int main(int argc, char **argv)
 				}
 			}
 
+			//parse messages
+			for (int j = 0; j < Data::num_memes; j++)
+			{
+				compare = strstr(incoming.message[i], Data::memes[j]);
+				if(compare != NULL) Data::Draw_Memes(compare);
+			}
 		}
-
-		SDL_SetRenderDrawColor(Init::renderer, 255, 0, 0, 255);
-		SDL_RenderClear(Init::renderer);
+	
+		//SDL_RenderClear(Data::renderer);
 
 		SDL_Rect dest;
 		dest.x = 0;
@@ -267,7 +292,7 @@ int main(int argc, char **argv)
 		dest.h = 56;
 
 		//hard cap how many characters can scroll across the screen
-
+		//Render incoming.message[i] with font on the screen for users to see
 		for (int i = current_copy_index; i < current_copy_index+number_of_copies_to_show; i++)
 		{
 			//output username
@@ -278,14 +303,14 @@ int main(int argc, char **argv)
 				src.y = 64 * (copy_username[i][j] / 16); //row
 				src.w = 64;
 				src.h = 64;
-				SDL_RenderCopyEx(Init::renderer, font_texture, &src, &dest, 0, NULL, SDL_FLIP_NONE);
+				SDL_RenderCopyEx(Data::renderer, font_texture, &src, &dest, 0, NULL, SDL_FLIP_NONE);
 
 				dest.x += 40;
 			}
 
 			src.x = 64 * 10;
 			src.y = 64 * 3;
-			SDL_RenderCopyEx(Init::renderer, font_texture, &src, &dest, 0, NULL, SDL_FLIP_NONE);
+			SDL_RenderCopyEx(Data::renderer, font_texture, &src, &dest, 0, NULL, SDL_FLIP_NONE);
 
 			dest.x += 60;
 			//output their message
@@ -294,16 +319,16 @@ int main(int argc, char **argv)
 				src.x = 64 * (copy_message[i][j] % 16);
 				src.y = 64 * (copy_message[i][j] / 16);
 	
-				SDL_RenderCopyEx(Init::renderer, font_texture, &src, &dest, 0, NULL, SDL_FLIP_NONE);
+				SDL_RenderCopyEx(Data::renderer, font_texture, &src, &dest, 0, NULL, SDL_FLIP_NONE);
 
 				dest.x += 40;
 
-				if (dest.x >= Init::screen_width - 64)
+				if (dest.x >= Data::screen_width - 64)
 				{
 					dest.x = 0;
 					dest.y += 56;
 				}
-				if (dest.y >= Init::screen_height - 64)
+				if (dest.y >= Data::screen_height - 64)
 				{
 					dest.x = 0;
 					dest.y = 0;
@@ -315,22 +340,21 @@ int main(int argc, char **argv)
 
 		}
 
-
-
 		/*
 		SDL_Rect image_rect;
-		image_rect.x = 600;
-		image_rect.y = 600;
-		image_rect.w = 60;
-		image_rect.h = 60;
+		image_rect.x =500; //starting position in the actual image to show
+		image_rect.y = 200; //starting position in the actual image to show
+		image_rect.w = 4000; //actual image dimensions to show
+		image_rect.h = 2000; //actual image dimensions to show
 
 		SDL_Rect screen_rect;
-		screen_rect.x = 50;
-		screen_rect.y = 50;
-		screen_rect.w = 240;
-		screen_rect.h = 240;
-		SDL_RenderCopyEx(Init::renderer, texture, &image_rect, &screen_rect, 0, NULL, SDL_FLIP_NONE);
-
+		screen_rect.x = Data::screen_width/2;
+		screen_rect.y = 0;
+		screen_rect.w = 500;
+		screen_rect.h = 500;
+		SDL_RenderCopyEx(Data::renderer, texture, NULL, &screen_rect, 0, NULL, SDL_FLIP_NONE);
+		*/
+		/*
 		screen_rect.x = 300;
 		screen_rect.y = 300;
 		screen_rect.w = 60;
@@ -352,18 +376,8 @@ int main(int argc, char **argv)
 		screen_rect.h = 60;
 		SDL_RenderCopyEx(Init::renderer, texture, &image_rect, &screen_rect, 0, NULL, SDL_FLIP_NONE);
 		*/
-		/*
-		if (current_time - last_text_change_tiem > 1000) //1000 is 1 frame per second
-		{
-			last_text_change_tiem = current_time;
 
-			for (int i = 0; i < 16; i++)
-			{
-				//incoming.message[i] = 'a' +
-			}
-		}*/
-
-		SDL_RenderPresent(Init::renderer);
+		SDL_RenderPresent(Data::renderer);
 	}
 	
 	getchar();
