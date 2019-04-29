@@ -39,12 +39,6 @@ using namespace std;
 
 const long long int buffer_size = 10000;
 
-void initialize_tts(ISpVoice** pVoice)
-{
-	CoInitialize(NULL);
-	CoCreateInstance(CLSID_SpVoice, NULL, CLSCTX_ALL, IID_ISpVoice, (void**)pVoice);
-}
-
 namespace Data
 {
 	SDL_Renderer *renderer = NULL;
@@ -52,6 +46,7 @@ namespace Data
 	int screen_height = 1080;
 	const int num_memes = 10;
 	const int meme_buffer = 10000;
+	const int array_buffer = 1000;
 	SDL_Texture **meme_textures = (SDL_Texture**)malloc(sizeof(SDL_Texture*) * meme_buffer);
 
 	//parse array for these words
@@ -64,7 +59,26 @@ namespace Data
 		"lul.jpg", "monkaS.png", "omegalul.png", "pogchamp.jpg", "poggers.png", 
 		"residentsleeper.png", "wesmart.png" };
 
+	struct Meme_Data
+	{
+		float x, y;
+		int w, h;
+		float vel_x, vel_y;
+	};
 
+	void intialize_meme_data(Meme_Data d)
+	{
+		d.x = 0;
+		d.y = 0;
+		d.vel_x = 0;
+		d.vel_y = 0;
+	}
+
+	void initialize_tts(ISpVoice** pVoice)
+	{
+		CoInitialize(NULL);
+		CoCreateInstance(CLSID_SpVoice, NULL, CLSCTX_ALL, IID_ISpVoice, (void**)pVoice);
+	}
 
 	void intialize_Memes()
 	{
@@ -100,24 +114,38 @@ namespace Data
 		//SDL_FreeSurface(memes);
 		cout << "Let's draw!" << endl;
 		SDL_Rect screen_pos;
-		screen_pos.x = 400;
-		screen_pos.y = 400;
-		screen_pos.w = 1000;
-		screen_pos.h = 1000;
+		screen_pos.x = d.x;
+		screen_pos.y = d.y;
+		screen_pos.w = d.w;
+		screen_pos.h = d.h;
 		for (int i = 0; i < num_memes; i++)
 		{
 			compare = strstr(parse_meme, memes[i]);
-			if(compare != NULL)
+			if (compare != NULL)
 			{
-				cout << "What are we parsing: " << meme_textures[i] << endl;
 				SDL_RenderCopyEx(renderer, meme_textures[i], NULL, &screen_pos, 0, NULL, SDL_FLIP_NONE);
-				//screen_pos.x += 1;
 			}
+			
 		}
 
 	}
 
+	int createactor(Meme_Data d, char* meme_array, int array_size)
+	{
+		for (int i = 0; i < array_size; i++)
+		{
+			if (meme_array[i] == 0)
+			{
+				meme_array[i] = 1;
+				return i;
+			}
+		}
+	}
 
+	void destroyactor(char* meme_array, int index)
+	{
+		meme_array[index] = 0;
+	}
 }
 
 
@@ -125,7 +153,7 @@ int main(int argc, char **argv)
 {
 	//initialize tts
 	ISpVoice * pVoice = NULL;
-	initialize_tts(&pVoice);
+	Data::initialize_tts(&pVoice);
 	wchar_t wstr[buffer_size];
 
 	long long currency = 100; //replace this with donation amount converted into pennies
@@ -151,8 +179,19 @@ int main(int argc, char **argv)
 		copy_username[i] = "me";
 		copy_message[i] = "hello";
 	}
-
 	copy_n_count = number_of_copies_to_show;
+
+	int meme_array_size = 10000;
+	//Initialize Meme Data 
+	Data::Meme_Data *meme_data = new Data::Meme_Data[meme_array_size];
+	
+	unsigned char *active = new unsigned char[meme_array_size];
+
+	for (int i = 0; i < meme_array_size; i++)
+	{
+		active[i] = 0;
+		Data::intialize_meme_data(meme_data[i]);
+	}
 
 	//initialize SDL
 	Data::initialize_SDL();
@@ -277,7 +316,11 @@ int main(int argc, char **argv)
 			for (int j = 0; j < Data::num_memes; j++)
 			{
 				compare = strstr(incoming.message[i], Data::memes[j]);
-				if(compare != NULL) Data::Draw_Memes(compare);
+				if (compare != NULL)
+				{
+					int index = Data::createactor(meme_data[i]);
+					Data::Draw_Memes(compare);
+				}
 			}
 		}
 	
