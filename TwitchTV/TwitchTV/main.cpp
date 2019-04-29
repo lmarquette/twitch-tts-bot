@@ -105,46 +105,52 @@ namespace Data
 
 	}
 
-	void Draw_Memes(char* parse_meme)
+	void Draw(Meme_Data *d, int meme_index, int index)
 	{
-		char* compare;
-		double creation_time;
-		//SDL_Surface *memes = IMG_Load(meme_name".jpg");
-		//SDL_Texture *texture = SDL_CreateTextureFromSurface(Data::renderer, memes);
-		//SDL_FreeSurface(memes);
-		cout << "Let's draw!" << endl;
 		SDL_Rect screen_pos;
-		screen_pos.x = d.x;
-		screen_pos.y = d.y;
-		screen_pos.w = d.w;
-		screen_pos.h = d.h;
-		for (int i = 0; i < num_memes; i++)
-		{
-			compare = strstr(parse_meme, memes[i]);
-			if (compare != NULL)
-			{
-				SDL_RenderCopyEx(renderer, meme_textures[i], NULL, &screen_pos, 0, NULL, SDL_FLIP_NONE);
-			}
-			
-		}
+		screen_pos.x = d[index].x;
+		screen_pos.y = d[index].y;
+		screen_pos.w = d[index].w;
+		screen_pos.h = d[index].h;
+		cout << screen_pos.x << endl;
+		cout << screen_pos.y << endl;
+		cout << screen_pos.w << endl;
+		cout << screen_pos.h << endl;
+		/*screen_pos.x = 300;
+		screen_pos.y = 300;
+		screen_pos.w = 200;
+		screen_pos.h = 200;*/
 
+		SDL_RenderCopyEx(renderer, meme_textures[meme_index], NULL, &screen_pos, 0, NULL, SDL_FLIP_NONE);
+		
 	}
 
-	int createactor(Meme_Data d, char* meme_array, int array_size)
+	int createactor(unsigned char *arr, int array_size)
 	{
 		for (int i = 0; i < array_size; i++)
 		{
-			if (meme_array[i] == 0)
+			if (arr[i] == 0)
 			{
-				meme_array[i] = 1;
+				arr[i] = 1;
 				return i;
 			}
 		}
 	}
 
-	void destroyactor(char* meme_array, int index)
+	void destroyactor(unsigned char* meme_array, int index)
 	{
 		meme_array[index] = 0;
+	}
+
+	int parse_string(char* incoming_message)
+	{
+		char *compare;
+		for (int i = 0; i < num_memes; i++)
+		{
+			compare = strstr(incoming_message, memes[i]);
+			if (compare != NULL) return i;
+		}
+		return -1;
 	}
 }
 
@@ -184,9 +190,8 @@ int main(int argc, char **argv)
 	int meme_array_size = 10000;
 	//Initialize Meme Data 
 	Data::Meme_Data *meme_data = new Data::Meme_Data[meme_array_size];
-	
 	unsigned char *active = new unsigned char[meme_array_size];
-
+	//intialize array to 0
 	for (int i = 0; i < meme_array_size; i++)
 	{
 		active[i] = 0;
@@ -244,6 +249,10 @@ int main(int argc, char **argv)
 		unsigned int current_time = SDL_GetTicks();
 
 		unsigned int last_text_change_tiem = SDL_GetTicks();
+
+		int parsed_index = -1;
+
+		t2 = SDL_GetTicks();
 
 		//consume all window events first
 		SDL_Event event;
@@ -313,18 +322,20 @@ int main(int argc, char **argv)
 			}
 
 			//parse messages
-			for (int j = 0; j < Data::num_memes; j++)
+			parsed_index = Data::parse_string(incoming.message[i]);
+			if (parsed_index != -1)
 			{
-				compare = strstr(incoming.message[i], Data::memes[j]);
-				if (compare != NULL)
-				{
-					int index = Data::createactor(meme_data[i]);
-					Data::Draw_Memes(compare);
-				}
+				int k = Data::createactor(active, meme_array_size);
+				meme_data[k].w = 200;
+				meme_data[k].h = 200;
+				meme_data[k].x = 2 * rand() % Data::screen_width - meme_data[k].w;
+				meme_data[k].y = 3 * rand() % Data::screen_height - meme_data[k].h;
+				cout << "K: " << k << endl;
+				Data::Draw(meme_data, parsed_index,k);
 			}
 		}
-	
-		SDL_RenderClear(Data::renderer);
+		
+		//SDL_RenderClear(Data::renderer);
 
 		SDL_Rect dest;
 		dest.x = 0;
