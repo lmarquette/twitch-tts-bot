@@ -60,9 +60,27 @@ namespace Data
 		"residentsleeper", "wesmart" };
 
 	//filenames
-	char* meme_filenames[num_memes] = { "feelsbadman.png", "kappa.jpg", "kreygasm.png", 
-		"omegalul.png", "monkaS.png", "lul.jpg", "pogchamp.jpg", "poggers.png", 
+	char* meme_filenames[num_memes] = { "feelsbadman.png", "kappa.png", "kreygasm.png", 
+		"omegalul.png", "monkaS.png", "lul.png", "pogchamp.png", "poggers.png", 
 		"residentsleeper.png", "wesmart.png" };
+
+	/*
+	char* memes[num_memes] = { "4head", "ayaya", "champ", "daijoubu", "dolan", "ehehe", "ezy", "feelsbadman",
+"feelsgoodman", "feelsweirdman", "gachibass", "gachigasm", "hahaa", "handsup", "heavybreathing", "hyperbruh",
+"hypers","kannanom", "kannapolice", "kapp", "klappa", "kreygasm", "lulw", "lul", "mikustare", "monkagun", "monkah",
+"monkahmm", "monkamega", "monkaS", "monkaw", "nepsmug", "nyanpasu", "ohisee", "okaychamp", "omegalul", "peeposad",
+"pepega","pepehands","pepelaugh","pepelmao","peperee","pepothink","pillowno","pillowyes","pogchamp","pogchomp",
+"pog","pogey","poggers","pogu","pogyou","reeeee","residentsleeper","suchmeme","thisisfine","thonk","tuturu",
+"waitwhat","weirdchamp","wesmart","kappa" };
+
+	//filenames
+	char* meme_filenames[num_memes] = { "4head.png", "ayaya.png", "champ.png", "daijoubu.png", "dolan.png", "ehehe.png", "ezy.png", "feelsbadman.png",
+	"feelsgoodman.png", "feelsweirdman.png", "gachibass.png", "gachigasm.png", "hahaa.png", "handsup.png", "heavybreathing.png", "hyperbruh.png",
+	"hypers.png","kannanom.png", "kannapolice.png", "kapp.png", "klappa.png", "kreygasm.png", "lulw.png", "lul.png", "mikustare.png", "monkagun.png", "monkah.png",
+	"monkahmm.png", "monkamega.png", "monkaS.png", "monkaw.png", "nepsmug.png", "nyanpasu.png", "ohisee.png", "okaychamp.png", "omegalul.png", "peeposad.png",
+	"pepega.png","pepehands.png","pepelaugh.png","pepelmao.png","peperee.png","pepothink.png","pillowno.png","pillowyes.png","pogchamp.png","pogchomp.png",
+	"pog.png","pogey.png","poggers.png","pogu.png","pogyou.png","reeeee.png","residentsleeper.png","suchmeme.png","thisisfine.png","thonk.png","tuturu.png",
+	"waitwhat.png","weirdchamp.png","wesmart.png","kappa.png" };*/
 
 	struct Meme_Data
 	{
@@ -248,7 +266,7 @@ int main(int argc, char **argv)
 	Twitch::connect(&connection);
 
 	//join a channel
-	Twitch::join_Channel(&connection, "iwilldominate");
+	Twitch::join_Channel(&connection, "guildude");
 
 	//incoming message list from all connected channels
 	Twitch::Message::Table incoming;
@@ -487,14 +505,14 @@ int main(int argc, char **argv)
 		currentt_time = clock();
 		if (currentt_time-start_time >100)
 		{
-				cout << "miku" << endl;
+				//cout << "miku" << endl;
 				miku_src.x = 0; //column
 				miku_src.y = (miku_src.y + 245) % 7350; //row
 				start_time = currentt_time;
 				//SDL_RenderCopyEx(Data::renderer, miku_texture, &miku_src, &miku_dest, 0, NULL, SDL_FLIP_NONE);
 		}
 
-		//SDL_RenderCopyEx(Data::renderer, miku_texture, &miku_src, &miku_dest, 0, NULL, SDL_FLIP_NONE);
+		SDL_RenderCopyEx(Data::renderer, miku_texture, &miku_src, &miku_dest, 0, NULL, SDL_FLIP_NONE);
 
 		SDL_RenderPresent(Data::renderer);
 	}
