@@ -56,12 +56,12 @@ namespace Data
 
 	//parse array for these words
 	char* memes[num_memes] = { "feelsbadman", "kappa", "kreygasm", "omegalul",
-		"monkaS", "lul", "pogchamp", "poggers", 
+		"monkaS", "lulw", "pogchamp", "poggers", 
 		"residentsleeper", "wesmart" };
 
 	//filenames
 	char* meme_filenames[num_memes] = { "feelsbadman.png", "kappa.png", "kreygasm.png", 
-		"omegalul.png", "monkaS.png", "lul.png", "pogchamp.png", "poggers.png", 
+		"omegalul.png", "monkaS.png", "lulw.png", "pogchamp.png", "poggers.png", 
 		"residentsleeper.png", "wesmart.png" };
 
 	/*
@@ -214,7 +214,7 @@ int main(int argc, char **argv)
 	//initialize Twitch Message Copy Over
 	unsigned int copy_n_count = 0;
 	unsigned int current_copy_index = 0;
-	unsigned int number_of_copies_to_show = 7;
+	unsigned int number_of_copies_to_show = 3;
 
 	unsigned int copy_buffer = 1000; 
 	char **copy_message = new char*[copy_buffer];
@@ -266,7 +266,7 @@ int main(int argc, char **argv)
 	Twitch::connect(&connection);
 
 	//join a channel
-	Twitch::join_Channel(&connection, "guildude");
+	Twitch::join_Channel(&connection, "moonmoon_ow");
 
 	//incoming message list from all connected channels
 	Twitch::Message::Table incoming;
@@ -339,11 +339,10 @@ int main(int argc, char **argv)
 			//retrieve messages from twitch
 			//printf("%s@%s|(%.2f)->%s\n", incoming.username[i], incoming.channel[i], (double)timestamp / CLOCKS_PER_SEC, incoming.message[i]);
 
-			int res = strcmp("guildude", incoming.username[i]); //replace my username with text of donater 
+			//int res = strcmp("guildude", incoming.username[i]); //replace my username with text of donater 
 
 			//Note to self, make sure symbols don't deduct from currency
-			if (res == 0)
-			{
+
 				//printf("%s", incoming.message[i]);
 				/*cout << "currency: " << currency << endl;
 				cout << "strlen: " << strlen(incoming.message[i]) - 1 << endl;
@@ -351,7 +350,7 @@ int main(int argc, char **argv)
 				cout << "currency: " << currency << endl;*/
 
 				//pVoice->GetStatus(&status, NULL);
-
+				/*
 				if (currency < 0)
 				{
 					cout << "You have gone past your character limit" << endl; //replace this with an actual twitch message sent
@@ -366,14 +365,15 @@ int main(int argc, char **argv)
 					//printf("%s", paid_tts);
 					//cerr << currency << endl; //deduct 1 from strlen to get exact char value
 					mbstowcs(wstr, incoming.message[i], buffer_size); //convert twitch messages into wide character
-					pVoice->Speak(wstr, SVSFlagsAsync | SVSFPurgeBeforeSpeak, NULL); //output twitch messages 
-				}
-			}
-
+					pVoice->Speak(wstr, SVSFlagsAsync | SVSFPurgeBeforeSpeak, NULL); //output twitch messages
+				}*/
+		
 			//parse messages and grabs which index the meme is at in the array
 			int parsed_index = Data::parse_string(incoming.message[i]);
 			if (parsed_index != -1)
 			{
+				mbstowcs(wstr, Data::memes[parsed_index], buffer_size); //convert twitch messages into wide character
+				pVoice->Speak(wstr, SVSFlagsAsync | SVSFPurgeBeforeSpeak, NULL); //output twitch messages
 				//Data::ghetto_strstr(incoming.message[i]);
 				for (int yolo = 0; yolo < rand() % 100; yolo++)//spawn multiple emotes
 				{
@@ -417,8 +417,8 @@ int main(int argc, char **argv)
 		SDL_Rect dest;
 		dest.x = chat_start_pos_x;
 		dest.y = chat_start_pos_y;
-		dest.w = 35; //font size
-		dest.h = 35;
+		dest.w = 30; //font size
+		dest.h = 30;
 
 		
 		
@@ -426,53 +426,58 @@ int main(int argc, char **argv)
 		
 		//hard cap how many characters can scroll across the screen
 		//Render incoming.message[i] with font on the screen for users to see
-		for (int i = current_copy_index; i < current_copy_index+number_of_copies_to_show; i++)
+		currentt_time = clock();
+		if (currentt_time - start_time > 100)
 		{
-			//output username
-			SDL_Rect src;
-			for (int j = 0; j < strlen(copy_username[i]); j++)
+			for (int i = current_copy_index; i < current_copy_index + number_of_copies_to_show; i++)
 			{
-				src.x = 64 * (copy_username[i][j] % 16); //column
-				src.y = 64 * (copy_username[i][j] / 16); //row
-				src.w = 64;
-				src.h = 64;
+
+				//output username
+				SDL_Rect src;
+				for (int j = 0; j < strlen(copy_username[i]); j++)
+				{
+					src.x = 64 * (copy_username[i][j] % 16); //column
+					src.y = 64 * (copy_username[i][j] / 16); //row
+					src.w = 64;
+					src.h = 64;
+					SDL_RenderCopyEx(Data::renderer, font_texture, &src, &dest, 0, NULL, SDL_FLIP_NONE);
+
+					dest.x += 35; //spacers between characters
+				}
+
+				//to render colon from font sheet
+				src.x = 64 * 10;
+				src.y = 64 * 3;
 				SDL_RenderCopyEx(Data::renderer, font_texture, &src, &dest, 0, NULL, SDL_FLIP_NONE);
 
-				dest.x += 35; //spacers between characters
-			}
-
-			//to render colon from font sheet
-			src.x = 64 * 10;
-			src.y = 64 * 3;
-			SDL_RenderCopyEx(Data::renderer, font_texture, &src, &dest, 0, NULL, SDL_FLIP_NONE);
-
-			dest.x += 50;
-			//output their message
-			for (int j = 0; j < strlen(copy_message[i]); j++)
-			{
-				src.x = 64 * (copy_message[i][j] % 16);
-				src.y = 64 * (copy_message[i][j] / 16);
-	
-				SDL_RenderCopyEx(Data::renderer, font_texture, &src, &dest, 0, NULL, SDL_FLIP_NONE);
-
-				dest.x += 30;
-
-				//chat window size
-				if (dest.x >= chatbox_x) //checks if text has gone to 1920/2
+				dest.x += 50; //spacer
+				//output their message
+				for (int j = 0; j < strlen(copy_message[i]); j++)
 				{
-					dest.x = 0;
-					dest.y += 56;
+					src.x = 64 * (copy_message[i][j] % 16);
+					src.y = 64 * (copy_message[i][j] / 16);
+
+					SDL_RenderCopyEx(Data::renderer, font_texture, &src, &dest, 0, NULL, SDL_FLIP_NONE);
+
+					dest.x += 35; //gap between characters
+
+					//chat window size
+					if (dest.x >= chatbox_x) //checks if text has gone to 1920/2
+					{
+						dest.x = 0;
+						dest.y += 40; //newline
+					}
+					if (dest.y >= chatbox_y)
+					{
+						//reset position
+						dest.x = chat_start_pos_x;
+						dest.y = chat_start_pos_y;
+					}
 				}
-				if (dest.y >= chatbox_y)
-				{
-					dest.x = chat_start_pos_x;
-					dest.y = chat_start_pos_y;
-				}
+				dest.y += 40; //new line
+				dest.x = 0; //set font back to beginning
 			}
-			dest.y += 40; //new line
-			dest.x = 0; //set font back to beginning
 		}
-
 		//render memes on the page
 		for (int i = 0; i < meme_array_size; i++)
 		{
@@ -501,7 +506,7 @@ int main(int argc, char **argv)
 			//draw le meme
 			Data::Draw(meme_data, i);
 		}
-
+		/*
 		currentt_time = clock();
 		if (currentt_time-start_time >100)
 		{
@@ -512,7 +517,7 @@ int main(int argc, char **argv)
 				//SDL_RenderCopyEx(Data::renderer, miku_texture, &miku_src, &miku_dest, 0, NULL, SDL_FLIP_NONE);
 		}
 
-		SDL_RenderCopyEx(Data::renderer, miku_texture, &miku_src, &miku_dest, 0, NULL, SDL_FLIP_NONE);
+		SDL_RenderCopyEx(Data::renderer, miku_texture, &miku_src, &miku_dest, 0, NULL, SDL_FLIP_NONE);*/
 
 		SDL_RenderPresent(Data::renderer);
 	}
