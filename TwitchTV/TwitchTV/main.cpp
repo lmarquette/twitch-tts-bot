@@ -40,6 +40,10 @@ using namespace std;
 
 const long long int buffer_size = 10000;
 
+
+//Miku sprite sheet is 1225 x 1470px, 30 frames, 1 columns 30 rows
+//https://www.piskelapp.com/ for gif to sprite
+
 namespace Data
 {
 	SDL_Renderer *renderer = NULL;
@@ -196,7 +200,12 @@ int main(int argc, char **argv)
 
 	long int *y_pos = new long int[1000];
 
-	char *compare;
+
+	char* miku_gif = new char[30];
+	for (int i = 0; i < 30; i++)
+	{
+		miku_gif[i] = (char)malloc(sizeof(char) * 30);
+	}
 
 	//figure out how to remove this
 	for (int i = 0; i < number_of_copies_to_show; i++)
@@ -246,9 +255,13 @@ int main(int argc, char **argv)
 	
 	//https://stackoverflow.com/questions/3220477/how-to-use-clock-in-c examples
 	
-	SDL_Surface *font = IMG_Load("font_sheet.png"); //each char size is 49x46
+	SDL_Surface *font = IMG_Load("font_sheet.png");
 	SDL_Texture *font_texture = SDL_CreateTextureFromSurface(Data::renderer, font);
 	SDL_FreeSurface(font); //free surface since we pushed surface to texture
+
+	SDL_Surface *miku = IMG_Load("miku.png");
+	SDL_Texture *miku_texture = SDL_CreateTextureFromSurface(Data::renderer, miku);
+	SDL_FreeSurface(font);
 
 	float fancy_x = 0;
 	float fancy_y = 0;
@@ -373,6 +386,23 @@ int main(int argc, char **argv)
 		dest.y = 0;
 		dest.w = 56; //font size
 		dest.h = 56;
+
+		SDL_Rect miku_dest;
+		dest.x = 400;
+		dest.y = 400;
+		dest.w = 600; //font size
+		dest.h = 600;
+
+		SDL_Rect miku_src;
+		for (int i = 0; i < 30; i++)
+		{
+			cout << "miku" << endl;
+			miku_src.x = 245 * (miku_gif[i] % 1); //column
+			miku_src.y = 245 * (miku_gif[i] / 30); //row
+			miku_src.w = 245;
+			miku_src.h = 245;
+			SDL_RenderCopyEx(Data::renderer, miku_texture, &miku_src, &miku_dest, 0, NULL, SDL_FLIP_NONE);
+		}
 
 		//hard cap how many characters can scroll across the screen
 		//Render incoming.message[i] with font on the screen for users to see
