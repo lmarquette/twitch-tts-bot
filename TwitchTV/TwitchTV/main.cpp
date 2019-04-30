@@ -248,7 +248,7 @@ int main(int argc, char **argv)
 	Twitch::connect(&connection);
 
 	//join a channel
-	Twitch::join_Channel(&connection, "tfblade");
+	Twitch::join_Channel(&connection, "iwilldominate");
 
 	//incoming message list from all connected channels
 	Twitch::Message::Table incoming;
@@ -420,7 +420,7 @@ int main(int argc, char **argv)
 				src.h = 64;
 				SDL_RenderCopyEx(Data::renderer, font_texture, &src, &dest, 0, NULL, SDL_FLIP_NONE);
 
-				dest.x += 30; //spacers between characters
+				dest.x += 35; //spacers between characters
 			}
 
 			//to render colon from font sheet
@@ -491,7 +491,7 @@ int main(int argc, char **argv)
 				miku_src.x = 0; //column
 				miku_src.y = (miku_src.y + 245) % 7350; //row
 				start_time = currentt_time;
-				SDL_RenderCopyEx(Data::renderer, miku_texture, &miku_src, &miku_dest, 0, NULL, SDL_FLIP_NONE);
+				//SDL_RenderCopyEx(Data::renderer, miku_texture, &miku_src, &miku_dest, 0, NULL, SDL_FLIP_NONE);
 		}
 
 		//SDL_RenderCopyEx(Data::renderer, miku_texture, &miku_src, &miku_dest, 0, NULL, SDL_FLIP_NONE);
