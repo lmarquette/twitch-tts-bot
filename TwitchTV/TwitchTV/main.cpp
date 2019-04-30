@@ -51,13 +51,13 @@ namespace Data
 	SDL_Texture **meme_textures = (SDL_Texture**)malloc(sizeof(SDL_Texture*) * meme_buffer);
 
 	//parse array for these words
-	char* memes[num_memes] = { "feelsbadman", "kappa", "kreygasm", "lul",
-		"monkaS", "omegalul", "pogchamp", "poggers", 
+	char* memes[num_memes] = { "feelsbadman", "kappa", "kreygasm", "omegalul",
+		"monkaS", "lul", "pogchamp", "poggers", 
 		"residentsleeper", "wesmart" };
 
 	//filenames
 	char* meme_filenames[num_memes] = { "feelsbadman.png", "kappa.jpg", "kreygasm.png", 
-		"lul.jpg", "monkaS.png", "omegalul.png", "pogchamp.jpg", "poggers.png", 
+		"omegalul.png", "monkaS.png", "lul.jpg", "pogchamp.jpg", "poggers.png", 
 		"residentsleeper.png", "wesmart.png" };
 
 	struct Meme_Data
@@ -68,6 +68,25 @@ namespace Data
 		int meme_index;
 		unsigned int creation_time;
 	};
+	//str = incoming message, compare = what you're looking for
+	void ghetto_strstr(char* str)
+	{
+		static char tmp[4096];
+		strcpy(tmp, str);
+		int counter = 0;
+		cout << "str: " << str << endl;
+		cout << "compare: " << memes[3] << endl;
+		
+		for (int i = 0; i < num_memes; i++)
+		{
+			if (memes[i] == str)
+			{
+				cout << "yes" << endl;
+				cout << memes[i] << endl;
+				cout << str << endl;
+			}
+		}
+	}
 
 	void intialize_meme_data(Meme_Data *d)
 	{
@@ -314,13 +333,14 @@ int main(int argc, char **argv)
 			int parsed_index = Data::parse_string(incoming.message[i]);
 			if (parsed_index != -1)
 			{
-				for (int yolo = 0; yolo < 5; yolo++)//spawn multiple emotes
+				Data::ghetto_strstr(incoming.message[i]);
+				for (int yolo = 0; yolo < rand() % 100; yolo++)//spawn multiple emotes
 				{
 					int k = Data::createactor(active, meme_array_size);
 					if (k != -1)
 					{
-						meme_data[k].w = 200;
-						meme_data[k].h = 200;
+						meme_data[k].w = rand() % 300 + 50;
+						meme_data[k].h = rand() % 300 + 50;
 						meme_data[k].x = Data::screen_width / 2 - meme_data[k].w / 2;
 						meme_data[k].y = Data::screen_height / 2 - meme_data[k].h / 2;
 						meme_data[k].vel_x = 1.0 - 2.0*rand() / RAND_MAX;
@@ -336,6 +356,7 @@ int main(int argc, char **argv)
 			}
 		}
 		
+		//destroy actor
 		for (int i = 0; i < meme_array_size; i++)
 		{
 			if (active[i] == 0) continue;
@@ -406,6 +427,23 @@ int main(int argc, char **argv)
 			if (active[i] == 0) continue;
 			meme_data[i].x += meme_data[i].vel_x;
 			meme_data[i].y += meme_data[i].vel_y;
+
+			if (meme_data[i].x <= 0)
+			{
+				meme_data[i].vel_x *= -1;
+			}
+			if (meme_data[i].x + meme_data[i].w >= Data::screen_width)
+			{
+				meme_data[i].vel_x *= -1;
+			}
+			if (meme_data[i].y <= 0)
+			{
+				meme_data[i].vel_y *= -1;
+			}
+			if (meme_data[i].y + meme_data[i].h >= Data::screen_height)
+			{
+				meme_data[i].vel_y *= -1;
+			}
 
 			Data::Draw(meme_data, i);
 		}
