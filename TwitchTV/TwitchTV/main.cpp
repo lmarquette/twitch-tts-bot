@@ -69,14 +69,9 @@ namespace Data
 		unsigned int creation_time;
 	};
 
-	void intialize_meme_data(Meme_Data d)
+	void intialize_meme_data(Meme_Data *d)
 	{
-		d.x = 0;
-		d.y = 0;
-		d.vel_x = 0;
-		d.vel_y = 0;
-		d.meme_index = -1;
-		d.creation_time = clock() / 1000; //convert to seconds
+		*d = { 0 };
 	}
 
 	void initialize_tts(ISpVoice** pVoice)
@@ -134,26 +129,25 @@ namespace Data
 		}
 	}
 
-	void destroyactor(Meme_Data *d, unsigned char* meme_array, int index, unsigned int time, int life)
+	void destroyactor(unsigned char* active, int index)
 	{
-		unsigned int seconds = (d[index].creation_time - time) / 1000;
-		cout << seconds << endl;
-		if(seconds >= life) meme_array[index] = 0;
+		active[index] = 0;
 	}
 
 	int parse_string(char* incoming_message)
 	{
+		static char lowercase[4096];
+		strcpy(lowercase, incoming_message);
 		char *compare;
-		//conver to lowercase later
-		/*char *lowercase = new char[strlen(incoming_message)];
+	
 		for (int i = 0; i < strlen(incoming_message); i++)
 		{
 			lowercase[i] = tolower(incoming_message[i]);
 		}
-		cout << lowercase << endl;*/
+		
 		for (int i = 0; i < num_memes; i++)
 		{
-			compare = strstr(incoming_message, memes[i]);
+			compare = strstr(lowercase, memes[i]);
 			if (compare != NULL) return i;
 		}
 		return -1;
@@ -201,7 +195,7 @@ int main(int argc, char **argv)
 	for (int i = 0; i < meme_array_size; i++)
 	{
 		active[i] = 0;
-		Data::intialize_meme_data(meme_data[i]);
+		Data::intialize_meme_data(&meme_data[i]);
 	}
 
 	//initialize SDL
@@ -246,7 +240,6 @@ int main(int argc, char **argv)
 	for (;;)
 	{
 		srand(time(0));
-		unsigned int timestamp = clock(); //convert to seconds
 		unsigned int current_time = SDL_GetTicks();
 		unsigned int last_text_change_tiem = SDL_GetTicks();
 
@@ -262,7 +255,7 @@ int main(int argc, char **argv)
 
 		//collect all messages from all channels
 			//pretty sure ths is not how you spell COMMUNICATE
-		Twitch::communicate(&incoming, &connection, timestamp);
+		Twitch::communicate(&incoming, &connection, current_time);
 		if (connection.active == false)
 		{
 			printf("connection was closed!\n");
@@ -321,22 +314,35 @@ int main(int argc, char **argv)
 			int parsed_index = Data::parse_string(incoming.message[i]);
 			if (parsed_index != -1)
 			{
-				int k = Data::createactor(active, meme_array_size);
-
-				meme_data[k].w = 200;
-				meme_data[k].h = 200;
-				meme_data[k].x = rand() % (Data::screen_width - meme_data[k].w);
-				meme_data[k].y = rand() % (Data::screen_height - meme_data[k].h);
-				meme_data[k].creation_time = SDL_GetTicks();
-				meme_data[k].meme_index =  parsed_index;
+				for (int yolo = 0; yolo < 5; yolo++)//spawn multiple emotes
+				{
+					int k = Data::createactor(active, meme_array_size);
+					if (k != -1)
+					{
+						meme_data[k].w = 200;
+						meme_data[k].h = 200;
+						meme_data[k].x = Data::screen_width / 2 - meme_data[k].w / 2;
+						meme_data[k].y = Data::screen_height / 2 - meme_data[k].h / 2;
+						meme_data[k].vel_x = 1.0 - 2.0*rand() / RAND_MAX;
+						meme_data[k].vel_y = 1.0 - 2.0*rand() / RAND_MAX;
+						meme_data[k].creation_time = current_time;
+						meme_data[k].meme_index = parsed_index;
+					} 
+					else
+					{
+						printf("could not find inactive\n");
+					}
+				}
 			}
 		}
 		
 		for (int i = 0; i < meme_array_size; i++)
 		{
-
 			if (active[i] == 0) continue;
-			Data::destroyactor(meme_data, active, i, current_time, 5000);
+			if (current_time - meme_data[i].creation_time > 10000)
+			{
+				Data::destroyactor(active, i);
+			}
 		}
 
 		SDL_RenderClear(Data::renderer);
@@ -398,6 +404,9 @@ int main(int argc, char **argv)
 		for (int i = 0; i < meme_array_size; i++)
 		{
 			if (active[i] == 0) continue;
+			meme_data[i].x += meme_data[i].vel_x;
+			meme_data[i].y += meme_data[i].vel_y;
+
 			Data::Draw(meme_data, i);
 		}
 
