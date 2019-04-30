@@ -12,6 +12,7 @@
 #include <fstream>
 #include <assert.h>
 #include <algorithm>
+
 using namespace std;
 
 #include "SDL2-2.0.9/include/SDL.h"
@@ -64,6 +65,8 @@ namespace Data
 		float x, y;
 		int w, h;
 		float vel_x, vel_y;
+		int meme_index;
+		unsigned int creation_time;
 	};
 
 	void intialize_meme_data(Meme_Data d)
@@ -72,6 +75,8 @@ namespace Data
 		d.y = 0;
 		d.vel_x = 0;
 		d.vel_y = 0;
+		d.meme_index = -1;
+		d.creation_time = clock() / 1000; //convert to seconds
 	}
 
 	void initialize_tts(ISpVoice** pVoice)
@@ -105,23 +110,15 @@ namespace Data
 
 	}
 
-	void Draw(Meme_Data *d, int meme_index, int index)
+	void Draw(Meme_Data *d, int index)
 	{
 		SDL_Rect screen_pos;
 		screen_pos.x = d[index].x;
 		screen_pos.y = d[index].y;
 		screen_pos.w = d[index].w;
 		screen_pos.h = d[index].h;
-		cout << screen_pos.x << endl;
-		cout << screen_pos.y << endl;
-		cout << screen_pos.w << endl;
-		cout << screen_pos.h << endl;
-		/*screen_pos.x = 300;
-		screen_pos.y = 300;
-		screen_pos.w = 200;
-		screen_pos.h = 200;*/
 
-		SDL_RenderCopyEx(renderer, meme_textures[meme_index], NULL, &screen_pos, 0, NULL, SDL_FLIP_NONE);
+		SDL_RenderCopyEx(renderer, meme_textures[d[index].meme_index], NULL, &screen_pos, 0, NULL, SDL_FLIP_NONE);
 		
 	}
 
@@ -137,14 +134,23 @@ namespace Data
 		}
 	}
 
-	void destroyactor(unsigned char* meme_array, int index)
+	void destroyactor(Meme_Data *d, unsigned char* meme_array, int index, unsigned int time, int life)
 	{
-		meme_array[index] = 0;
+		unsigned int seconds = (d[index].creation_time - time) / 1000;
+		cout << seconds << endl;
+		if(seconds >= life) meme_array[index] = 0;
 	}
 
 	int parse_string(char* incoming_message)
 	{
 		char *compare;
+		//conver to lowercase later
+		/*char *lowercase = new char[strlen(incoming_message)];
+		for (int i = 0; i < strlen(incoming_message); i++)
+		{
+			lowercase[i] = tolower(incoming_message[i]);
+		}
+		cout << lowercase << endl;*/
 		for (int i = 0; i < num_memes; i++)
 		{
 			compare = strstr(incoming_message, memes[i]);
@@ -226,10 +232,6 @@ int main(int argc, char **argv)
 	twitch_messages::init(&twitch_msg);
 	
 	//https://stackoverflow.com/questions/3220477/how-to-use-clock-in-c examples
-
-	int t1 = clock();
-	int t2 = clock();
-	double time_passed = (t2 - t1) / (double)CLOCKS_PER_SEC;
 	
 	SDL_Surface *font = IMG_Load("font_sheet.png"); //each char size is 49x46
 	SDL_Texture *font_texture = SDL_CreateTextureFromSurface(Data::renderer, font);
@@ -244,15 +246,9 @@ int main(int argc, char **argv)
 	for (;;)
 	{
 		srand(time(0));
-		unsigned int timestamp = clock();
-
+		unsigned int timestamp = clock(); //convert to seconds
 		unsigned int current_time = SDL_GetTicks();
-
 		unsigned int last_text_change_tiem = SDL_GetTicks();
-
-		int parsed_index = -1;
-
-		t2 = SDL_GetTicks();
 
 		//consume all window events first
 		SDL_Event event;
@@ -321,21 +317,29 @@ int main(int argc, char **argv)
 				}
 			}
 
-			//parse messages
-			parsed_index = Data::parse_string(incoming.message[i]);
+			//parse messages and grabs which index the meme is at in the array
+			int parsed_index = Data::parse_string(incoming.message[i]);
 			if (parsed_index != -1)
 			{
 				int k = Data::createactor(active, meme_array_size);
+
 				meme_data[k].w = 200;
 				meme_data[k].h = 200;
-				meme_data[k].x = 2 * rand() % Data::screen_width - meme_data[k].w;
-				meme_data[k].y = 3 * rand() % Data::screen_height - meme_data[k].h;
-				cout << "K: " << k << endl;
-				Data::Draw(meme_data, parsed_index,k);
+				meme_data[k].x = rand() % (Data::screen_width - meme_data[k].w);
+				meme_data[k].y = rand() % (Data::screen_height - meme_data[k].h);
+				meme_data[k].creation_time = SDL_GetTicks();
+				meme_data[k].meme_index =  parsed_index;
 			}
 		}
 		
-		//SDL_RenderClear(Data::renderer);
+		for (int i = 0; i < meme_array_size; i++)
+		{
+
+			if (active[i] == 0) continue;
+			Data::destroyactor(meme_data, active, i, current_time, 5000);
+		}
+
+		SDL_RenderClear(Data::renderer);
 
 		SDL_Rect dest;
 		dest.x = 0;
@@ -386,48 +390,16 @@ int main(int argc, char **argv)
 					dest.y = 0;
 				}
 			}
-
 			dest.y += 56; //new line
 			dest.x = 0; //set font back to beginning
-
 		}
 
-		/*
-		SDL_Rect image_rect;
-		image_rect.x =500; //starting position in the actual image to show
-		image_rect.y = 200; //starting position in the actual image to show
-		image_rect.w = 4000; //actual image dimensions to show
-		image_rect.h = 2000; //actual image dimensions to show
-
-		SDL_Rect screen_rect;
-		screen_rect.x = Data::screen_width/2;
-		screen_rect.y = 0;
-		screen_rect.w = 500;
-		screen_rect.h = 500;
-		SDL_RenderCopyEx(Data::renderer, texture, NULL, &screen_rect, 0, NULL, SDL_FLIP_NONE);
-		*/
-		/*
-		screen_rect.x = 300;
-		screen_rect.y = 300;
-		screen_rect.w = 60;
-		screen_rect.h = 60;
-		SDL_RenderCopyEx(Init::renderer, texture, &image_rect, &screen_rect, 0, NULL, SDL_FLIP_NONE);
-
-
-		fancy_x += 0.01;
-		fancy_y += 0.01;
-
-		image_rect.x = fancy_x;
-		image_rect.y = fancy_y;
-		image_rect.w = 60;
-		image_rect.h = 60;
-
-		screen_rect.x = 300;
-		screen_rect.y = 500;
-		screen_rect.w = 60;
-		screen_rect.h = 60;
-		SDL_RenderCopyEx(Init::renderer, texture, &image_rect, &screen_rect, 0, NULL, SDL_FLIP_NONE);
-		*/
+		//render memes on the page
+		for (int i = 0; i < meme_array_size; i++)
+		{
+			if (active[i] == 0) continue;
+			Data::Draw(meme_data, i);
+		}
 
 		SDL_RenderPresent(Data::renderer);
 	}
