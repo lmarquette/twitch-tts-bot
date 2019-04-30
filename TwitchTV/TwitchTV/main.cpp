@@ -72,6 +72,7 @@ namespace Data
 		int meme_index;
 		unsigned int creation_time;
 	};
+	/*
 	//str = incoming message, compare = what you're looking for
 	void ghetto_strstr(char* str)
 	{
@@ -90,7 +91,7 @@ namespace Data
 				cout << str << endl;
 			}
 		}
-	}
+	}*/
 
 	void intialize_meme_data(Meme_Data *d)
 	{
@@ -180,6 +181,9 @@ namespace Data
 
 int main(int argc, char **argv)
 {
+	unsigned int start_time = clock();
+	unsigned int currentt_time = clock();
+
 	//initialize tts
 	ISpVoice * pVoice = NULL;
 	Data::initialize_tts(&pVoice);
@@ -244,7 +248,7 @@ int main(int argc, char **argv)
 	Twitch::connect(&connection);
 
 	//join a channel
-	Twitch::join_Channel(&connection, "guildude");
+	Twitch::join_Channel(&connection, "tfblade");
 
 	//incoming message list from all connected channels
 	Twitch::Message::Table incoming;
@@ -261,12 +265,18 @@ int main(int argc, char **argv)
 
 	SDL_Surface *miku = IMG_Load("miku.png");
 	SDL_Texture *miku_texture = SDL_CreateTextureFromSurface(Data::renderer, miku);
-	SDL_FreeSurface(font);
+	SDL_FreeSurface(miku);
 
 	float fancy_x = 0;
 	float fancy_y = 0;
 	
 	bool runTime = true;
+	SDL_Rect miku_src = { 0,0,245,245 };
+	SDL_Rect miku_dest;
+	miku_dest.x = 400;
+	miku_dest.y = 400;
+	miku_dest.w = 600; //gif size
+	miku_dest.h = 600;
 
 	printf("chat log\n");	
 	for (;;)
@@ -346,14 +356,14 @@ int main(int argc, char **argv)
 			int parsed_index = Data::parse_string(incoming.message[i]);
 			if (parsed_index != -1)
 			{
-				Data::ghetto_strstr(incoming.message[i]);
+				//Data::ghetto_strstr(incoming.message[i]);
 				for (int yolo = 0; yolo < rand() % 100; yolo++)//spawn multiple emotes
 				{
 					int k = Data::createactor(active, meme_array_size);
 					if (k != -1)
 					{
-						meme_data[k].w = rand() % 300 + 50;
-						meme_data[k].h = rand() % 300 + 50;
+						meme_data[k].w = rand() % 100 + 50;
+						meme_data[k].h = rand() % 100 + 50;
 						meme_data[k].x = Data::screen_width / 2 - meme_data[k].w / 2;
 						meme_data[k].y = Data::screen_height / 2 - meme_data[k].h / 2;
 						meme_data[k].vel_x = 1.0 - 2.0*rand() / RAND_MAX;
@@ -373,7 +383,7 @@ int main(int argc, char **argv)
 		for (int i = 0; i < meme_array_size; i++)
 		{
 			if (active[i] == 0) continue;
-			if (current_time - meme_data[i].creation_time > 10000)
+			if (current_time - meme_data[i].creation_time > 8000)
 			{
 				Data::destroyactor(active, i);
 			}
@@ -381,29 +391,21 @@ int main(int argc, char **argv)
 
 		SDL_RenderClear(Data::renderer);
 
+		double chatbox_x = Data::screen_width / 2;
+		double chatbox_y = Data::screen_height / 2 + 300;
+		double chat_start_pos_x = 0;
+		double chat_start_pos_y = Data::screen_height / 2;
+
 		SDL_Rect dest;
-		dest.x = 0;
-		dest.y = 0;
-		dest.w = 56; //font size
-		dest.h = 56;
+		dest.x = chat_start_pos_x;
+		dest.y = chat_start_pos_y;
+		dest.w = 35; //font size
+		dest.h = 35;
 
-		SDL_Rect miku_dest;
-		dest.x = 400;
-		dest.y = 400;
-		dest.w = 600; //font size
-		dest.h = 600;
-
-		SDL_Rect miku_src;
-		for (int i = 0; i < 30; i++)
-		{
-			cout << "miku" << endl;
-			miku_src.x = 245 * (miku_gif[i] % 1); //column
-			miku_src.y = 245 * (miku_gif[i] / 30); //row
-			miku_src.w = 245;
-			miku_src.h = 245;
-			SDL_RenderCopyEx(Data::renderer, miku_texture, &miku_src, &miku_dest, 0, NULL, SDL_FLIP_NONE);
-		}
-
+		
+		
+		
+		
 		//hard cap how many characters can scroll across the screen
 		//Render incoming.message[i] with font on the screen for users to see
 		for (int i = current_copy_index; i < current_copy_index+number_of_copies_to_show; i++)
@@ -418,14 +420,15 @@ int main(int argc, char **argv)
 				src.h = 64;
 				SDL_RenderCopyEx(Data::renderer, font_texture, &src, &dest, 0, NULL, SDL_FLIP_NONE);
 
-				dest.x += 40;
+				dest.x += 30; //spacers between characters
 			}
 
+			//to render colon from font sheet
 			src.x = 64 * 10;
 			src.y = 64 * 3;
 			SDL_RenderCopyEx(Data::renderer, font_texture, &src, &dest, 0, NULL, SDL_FLIP_NONE);
 
-			dest.x += 60;
+			dest.x += 50;
 			//output their message
 			for (int j = 0; j < strlen(copy_message[i]); j++)
 			{
@@ -434,20 +437,21 @@ int main(int argc, char **argv)
 	
 				SDL_RenderCopyEx(Data::renderer, font_texture, &src, &dest, 0, NULL, SDL_FLIP_NONE);
 
-				dest.x += 40;
+				dest.x += 30;
 
-				if (dest.x >= Data::screen_width - 64)
+				//chat window size
+				if (dest.x >= chatbox_x) //checks if text has gone to 1920/2
 				{
 					dest.x = 0;
 					dest.y += 56;
 				}
-				if (dest.y >= Data::screen_height - 64)
+				if (dest.y >= chatbox_y)
 				{
-					dest.x = 0;
-					dest.y = 0;
+					dest.x = chat_start_pos_x;
+					dest.y = chat_start_pos_y;
 				}
 			}
-			dest.y += 56; //new line
+			dest.y += 40; //new line
 			dest.x = 0; //set font back to beginning
 		}
 
@@ -458,6 +462,7 @@ int main(int argc, char **argv)
 			meme_data[i].x += meme_data[i].vel_x;
 			meme_data[i].y += meme_data[i].vel_y;
 
+			//boundaries for memes to bounce off of
 			if (meme_data[i].x <= 0)
 			{
 				meme_data[i].vel_x *= -1;
@@ -474,9 +479,22 @@ int main(int argc, char **argv)
 			{
 				meme_data[i].vel_y *= -1;
 			}
-
+			
+			//draw le meme
 			Data::Draw(meme_data, i);
 		}
+
+		currentt_time = clock();
+		if (currentt_time-start_time >100)
+		{
+				cout << "miku" << endl;
+				miku_src.x = 0; //column
+				miku_src.y = (miku_src.y + 245) % 7350; //row
+				start_time = currentt_time;
+				SDL_RenderCopyEx(Data::renderer, miku_texture, &miku_src, &miku_dest, 0, NULL, SDL_FLIP_NONE);
+		}
+
+		//SDL_RenderCopyEx(Data::renderer, miku_texture, &miku_src, &miku_dest, 0, NULL, SDL_FLIP_NONE);
 
 		SDL_RenderPresent(Data::renderer);
 	}
