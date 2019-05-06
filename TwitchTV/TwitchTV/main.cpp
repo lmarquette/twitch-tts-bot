@@ -49,11 +49,12 @@ namespace Data
 	SDL_Renderer *renderer = NULL;
 	int screen_width = 1920;
 	int screen_height = 1080;
-	const int num_memes = 10;
+	const int num_memes = 61;
 	const int meme_buffer = 10000;
 	const int array_buffer = 1000;
 	SDL_Texture **meme_textures = (SDL_Texture**)malloc(sizeof(SDL_Texture*) * meme_buffer);
 
+	/*
 	//parse array for these words
 	char* memes[num_memes] = { "feelsbadman", "kappa", "kreygasm", "omegalul",
 		"monkaS", "lulw", "pogchamp", "poggers", 
@@ -63,24 +64,24 @@ namespace Data
 	char* meme_filenames[num_memes] = { "feelsbadman.png", "kappa.png", "kreygasm.png", 
 		"omegalul.png", "monkaS.png", "lulw.png", "pogchamp.png", "poggers.png", 
 		"residentsleeper.png", "wesmart.png" };
-
-	/*
+		*/
+	
 	char* memes[num_memes] = { "4head", "ayaya", "champ", "daijoubu", "dolan", "ehehe", "ezy", "feelsbadman",
 "feelsgoodman", "feelsweirdman", "gachibass", "gachigasm", "hahaa", "handsup", "heavybreathing", "hyperbruh",
-"hypers","kannanom", "kannapolice", "kapp", "klappa", "kreygasm", "lulw", "lul", "mikustare", "monkagun", "monkah",
+"hypers","kannanom", "kannapolice", "kappa", "klappa", "kreygasm", "lulw", "lul", "mikustare", "monkagun", "monkah",
 "monkahmm", "monkamega", "monkaS", "monkaw", "nepsmug", "nyanpasu", "ohisee", "okaychamp", "omegalul", "peeposad",
-"pepega","pepehands","pepelaugh","pepelmao","peperee","pepothink","pillowno","pillowyes","pogchamp","pogchomp",
+"pepega","pepehands","pepelaugh","pepelmao","peperee","pepothink","pillowno","pillowyes","pogchamp",
 "pog","pogey","poggers","pogu","pogyou","reeeee","residentsleeper","suchmeme","thisisfine","thonk","tuturu",
 "waitwhat","weirdchamp","wesmart","kappa" };
 
 	//filenames
 	char* meme_filenames[num_memes] = { "4head.png", "ayaya.png", "champ.png", "daijoubu.png", "dolan.png", "ehehe.png", "ezy.png", "feelsbadman.png",
 	"feelsgoodman.png", "feelsweirdman.png", "gachibass.png", "gachigasm.png", "hahaa.png", "handsup.png", "heavybreathing.png", "hyperbruh.png",
-	"hypers.png","kannanom.png", "kannapolice.png", "kapp.png", "klappa.png", "kreygasm.png", "lulw.png", "lul.png", "mikustare.png", "monkagun.png", "monkah.png",
+	"hypers.png","kannanom.png", "kannapolice.png", "kappa.png", "klappa.png", "kreygasm.png", "lulw.png", "lul.jpg", "mikustare.png", "monkagun.png", "monkah.png",
 	"monkahmm.png", "monkamega.png", "monkaS.png", "monkaw.png", "nepsmug.png", "nyanpasu.png", "ohisee.png", "okaychamp.png", "omegalul.png", "peeposad.png",
-	"pepega.png","pepehands.png","pepelaugh.png","pepelmao.png","peperee.png","pepothink.png","pillowno.png","pillowyes.png","pogchamp.png","pogchomp.png",
+	"pepega.png","pepehands.png","pepelaugh.png","pepelmao.png","peperee.png","pepothink.png","pillowno.png","pillowyes.png","pogchamp.png",
 	"pog.png","pogey.png","poggers.png","pogu.png","pogyou.png","reeeee.png","residentsleeper.png","suchmeme.png","thisisfine.png","thonk.png","tuturu.png",
-	"waitwhat.png","weirdchamp.png","wesmart.png","kappa.png" };*/
+	"waitwhat.png","weirdchamp.png","wesmart.png","kappa.png" };
 
 	struct Meme_Data
 	{
@@ -200,8 +201,7 @@ namespace Data
 int main(int argc, char **argv)
 {
 	unsigned int start_time = clock();
-	unsigned int currentt_time = clock();
-
+	unsigned int last_time_speech = SDL_GetTicks();
 	//initialize tts
 	ISpVoice * pVoice = NULL;
 	Data::initialize_tts(&pVoice);
@@ -248,6 +248,8 @@ int main(int argc, char **argv)
 		Data::intialize_meme_data(&meme_data[i]);
 	}
 
+	int parsed_index = -1;
+
 	//initialize SDL
 	Data::initialize_SDL();
 	srand(time(0));
@@ -266,7 +268,7 @@ int main(int argc, char **argv)
 	Twitch::connect(&connection);
 
 	//join a channel
-	Twitch::join_Channel(&connection, "moonmoon_ow");
+	Twitch::join_Channel(&connection, "yassuo");
 
 	//incoming message list from all connected channels
 	Twitch::Message::Table incoming;
@@ -339,43 +341,12 @@ int main(int argc, char **argv)
 			//retrieve messages from twitch
 			//printf("%s@%s|(%.2f)->%s\n", incoming.username[i], incoming.channel[i], (double)timestamp / CLOCKS_PER_SEC, incoming.message[i]);
 
-			//int res = strcmp("guildude", incoming.username[i]); //replace my username with text of donater 
-
-			//Note to self, make sure symbols don't deduct from currency
-
-				//printf("%s", incoming.message[i]);
-				/*cout << "currency: " << currency << endl;
-				cout << "strlen: " << strlen(incoming.message[i]) - 1 << endl;
-				currency -= (strlen(incoming.message[i]) - 1);
-				cout << "currency: " << currency << endl;*/
-
-				//pVoice->GetStatus(&status, NULL);
-				/*
-				if (currency < 0)
-				{
-					cout << "You have gone past your character limit" << endl; //replace this with an actual twitch message sent
-				}
-				else if (currency > 0)
-				{
-					//printf("%s", incoming.message[i]);
-					for (int j = 0; j < currency; j++)
-					{
-						strcpy(paid_tts, incoming.message[i]);
-					}
-					//printf("%s", paid_tts);
-					//cerr << currency << endl; //deduct 1 from strlen to get exact char value
-					mbstowcs(wstr, incoming.message[i], buffer_size); //convert twitch messages into wide character
-					pVoice->Speak(wstr, SVSFlagsAsync | SVSFPurgeBeforeSpeak, NULL); //output twitch messages
-				}*/
-		
 			//parse messages and grabs which index the meme is at in the array
 			int parsed_index = Data::parse_string(incoming.message[i]);
+			parsed_index = Data::parse_string(incoming.message[i]);
 			if (parsed_index != -1)
 			{
-				mbstowcs(wstr, Data::memes[parsed_index], buffer_size); //convert twitch messages into wide character
-				pVoice->Speak(wstr, SVSFlagsAsync | SVSFPurgeBeforeSpeak, NULL); //output twitch messages
-				//Data::ghetto_strstr(incoming.message[i]);
-				for (int yolo = 0; yolo < rand() % 100; yolo++)//spawn multiple emotes
+				for (int yolo = 0; yolo < rand() % 10000000; yolo++)//spawn multiple emotes
 				{
 					int k = Data::createactor(active, meme_array_size);
 					if (k != -1)
@@ -384,11 +355,11 @@ int main(int argc, char **argv)
 						meme_data[k].h = rand() % 100 + 50;
 						meme_data[k].x = Data::screen_width / 2 - meme_data[k].w / 2;
 						meme_data[k].y = Data::screen_height / 2 - meme_data[k].h / 2;
-						meme_data[k].vel_x = 1.0 - 2.0*rand() / RAND_MAX;
-						meme_data[k].vel_y = 1.0 - 2.0*rand() / RAND_MAX;
+						meme_data[k].vel_x = 1.0 - 10.0*rand() / RAND_MAX;
+						meme_data[k].vel_y = 1.0 - 10.0*rand() / RAND_MAX;
 						meme_data[k].creation_time = current_time;
 						meme_data[k].meme_index = parsed_index;
-					} 
+					}
 					else
 					{
 						printf("could not find inactive\n");
@@ -396,12 +367,31 @@ int main(int argc, char **argv)
 				}
 			}
 		}
+
+		current_time = SDL_GetTicks();
+			//last_time_speech = current_time;
+		for (int i = 0; i < incoming.n_count; i++)
+		{
+			int parsed_index = Data::parse_string(incoming.message[i]);
+			parsed_index = Data::parse_string(incoming.message[i]);
+			if (parsed_index != -1)
+			{
+	
+					last_time_speech = current_time;
+					cout << last_time_speech << endl;
+					mbstowcs(wstr, Data::memes[parsed_index], buffer_size); //convert twitch messages into wide character
+					pVoice->Speak(wstr, SVSFlagsAsync, NULL); //output twitch messages
+					break;
+				
+			}
+		}
 		
+
 		//destroy actor
 		for (int i = 0; i < meme_array_size; i++)
 		{
 			if (active[i] == 0) continue;
-			if (current_time - meme_data[i].creation_time > 8000)
+			if (current_time - meme_data[i].creation_time > 30000)
 			{
 				Data::destroyactor(active, i);
 			}
@@ -410,7 +400,7 @@ int main(int argc, char **argv)
 		SDL_RenderClear(Data::renderer);
 
 		double chatbox_x = Data::screen_width / 2;
-		double chatbox_y = Data::screen_height / 2 + 300;
+		double chatbox_y = Data::screen_height / 2 + 400;
 		double chat_start_pos_x = 0;
 		double chat_start_pos_y = Data::screen_height / 2;
 
@@ -426,8 +416,8 @@ int main(int argc, char **argv)
 		
 		//hard cap how many characters can scroll across the screen
 		//Render incoming.message[i] with font on the screen for users to see
-		currentt_time = clock();
-		if (currentt_time - start_time > 100)
+		current_time = clock();
+		if (current_time - start_time > 100)
 		{
 			for (int i = current_copy_index; i < current_copy_index + number_of_copies_to_show; i++)
 			{
@@ -478,6 +468,7 @@ int main(int argc, char **argv)
 				dest.x = 0; //set font back to beginning
 			}
 		}
+
 		//render memes on the page
 		for (int i = 0; i < meme_array_size; i++)
 		{

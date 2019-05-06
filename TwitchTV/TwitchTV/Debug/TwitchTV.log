@@ -3,23 +3,23 @@ c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\twitchcode.h(2
 c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\stringvector.h(23): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
 c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\stringvector.h(61): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
 c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\stringvector.h(100): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
-c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(153): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
 c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(154): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(185): warning C4018: '<': signed/unsigned mismatch
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(155): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(186): warning C4018: '<': signed/unsigned mismatch
 c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(229): warning C4302: 'type cast': truncation from 'void *' to 'char'
 c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(233): warning C4018: '<': signed/unsigned mismatch
-c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(253): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(302): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(385): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(386): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(387): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(388): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(418): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(419): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(432): warning C4018: '<': signed/unsigned mismatch
-c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(437): warning C4018: '<': signed/unsigned mismatch
-c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(455): warning C4018: '<': signed/unsigned mismatch
-c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(473): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(474): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(172): warning C4715: 'Data::createactor': not all control paths return a value
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(255): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(304): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(356): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(357): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(358): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(359): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(408): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(409): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(422): warning C4018: '<': signed/unsigned mismatch
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(427): warning C4018: '<': signed/unsigned mismatch
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(445): warning C4018: '<': signed/unsigned mismatch
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(463): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(464): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\kouhai\documents\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(173): warning C4715: 'Data::createactor': not all control paths return a value
   TwitchTV.vcxproj -> C:\Users\Kouhai\Documents\GitHub\twitch-tts-bot\TwitchTV\TwitchTV\Debug\TwitchTV.exe
