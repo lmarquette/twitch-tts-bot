@@ -29,5 +29,11 @@
     <ClInclude Include="ReadfromFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Memes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Memes_Data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
