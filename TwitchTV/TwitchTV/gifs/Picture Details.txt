@@ -1,0 +1,25 @@
+miku_flip: 245 x 245 | 30 frames
+
+comeatmebro: 400 x 225 | 39 frames
+
+dealwithit: 446 x 228 | 37 frames
+
+dieinafire: 400 x 225 | 10 frames
+
+dumbass: 504 x 240 | 69 frames
+
+fml: 480 x 270 | 222 frames
+
+panic: 269 x 270 | 12 frames
+
+smug: 498 x 285 | 17 frames
+
+spaz: 128 x 128 | 12 frames
+
+thumbsup: 500 x 281 | 42 frames
+
+
+
+
+
+

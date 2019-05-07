@@ -17,7 +17,6 @@
 
 using namespace std;
 
-
 #include "twitchcode.h"
 #include "stringvector.h"
 //#include "ReadfromFile.h"
@@ -28,31 +27,21 @@ using namespace std;
 
 const long long int buffer_size = 10000;
 
-
-//Miku sprite sheet is 1225 x 1470px, 30 frames, 1 columns 30 rows
-//https://www.piskelapp.com/ for gif to sprite
-
-
 void initialize_tts(ISpVoice** pVoice)
 {
 	CoInitialize(NULL);
 	CoCreateInstance(CLSID_SpVoice, NULL, CLSCTX_ALL, IID_ISpVoice, (void**)pVoice);
 }
 
-
-
 int main(int argc, char **argv)
 {
 	unsigned int start_time = clock();
 	unsigned int last_time_speech = SDL_GetTicks();
+
 	//initialize tts
 	ISpVoice * pVoice = NULL;
 	initialize_tts(&pVoice);
 	wchar_t wstr[buffer_size];
-
-	long long currency = 100; //replace this with donation amount converted into pennies
-
-	char* paid_tts = (char*)malloc(sizeof(char) * buffer_size);
 
 	//initialize Twitch Message Copy Over
 	unsigned int copy_n_count = 0;
@@ -63,27 +52,21 @@ int main(int argc, char **argv)
 	char **copy_message = new char*[copy_buffer];
 	char **copy_username = new char*[copy_buffer];
 
-	long int *y_pos = new long int[1000];
-
-
-	char* miku_gif = new char[30];
-	for (int i = 0; i < 30; i++)
-	{
-		miku_gif[i] = (char)malloc(sizeof(char) * 30);
-	}
-
 	//figure out how to remove this
 	for (int i = 0; i < number_of_copies_to_show; i++)
 	{
 		copy_username[i] = "me";
 		copy_message[i] = "hello";
 	}
+
 	copy_n_count = number_of_copies_to_show;
 
 	int meme_array_size = 10000;
+
 	//Initialize Meme Data 
 	Data::Meme_Data *meme_data = new Data::Meme_Data[meme_array_size];
 	unsigned char *active = new unsigned char[meme_array_size];
+
 	//intialize array to 0
 	for (int i = 0; i < meme_array_size; i++)
 	{
@@ -93,12 +76,11 @@ int main(int argc, char **argv)
 
 	int parsed_index = -1;
 
-	//initialize SDL
+	//initialize
+	Data::intialize_Memes();
+	Data::initialize_Gifs();
 	Data::initialize_SDL();
 	srand(time(0));
-
-	//initialize Memes
-	Data::intialize_Memes();
 
 	//initialize network
 	Twitch::startup();
@@ -120,26 +102,19 @@ int main(int argc, char **argv)
 	twitch_messages::data twitch_msg;
 	twitch_messages::init(&twitch_msg);
 	
-	//https://stackoverflow.com/questions/3220477/how-to-use-clock-in-c examples
-	
-	SDL_Surface *font = IMG_Load("font_sheet.png");
+	SDL_Surface *font = IMG_Load("Font/font_sheet.png");
 	SDL_Texture *font_texture = SDL_CreateTextureFromSurface(Data::renderer, font);
 	SDL_FreeSurface(font); //free surface since we pushed surface to texture
 
-	SDL_Surface *miku = IMG_Load("miku.png");
-	SDL_Texture *miku_texture = SDL_CreateTextureFromSurface(Data::renderer, miku);
-	SDL_FreeSurface(miku);
-
-	float fancy_x = 0;
-	float fancy_y = 0;
-	
 	bool runTime = true;
+
+	/*
 	SDL_Rect miku_src = { 0,0,245,245 };
 	SDL_Rect miku_dest;
 	miku_dest.x = 400;
 	miku_dest.y = 400;
 	miku_dest.w = 600; //gif size
-	miku_dest.h = 600;
+	miku_dest.h = 600;*/
 
 	printf("chat log\n");	
 	for (;;)
@@ -183,9 +158,14 @@ int main(int argc, char **argv)
 			//printf("%s@%s|(%.2f)->%s\n", incoming.username[i], incoming.channel[i], (double)timestamp / CLOCKS_PER_SEC, incoming.message[i]);
 
 			//parse messages and grabs which index the meme is at in the array
-			int parsed_index = Data::parse_string(incoming.message[i]);
-			parsed_index = Data::parse_string(incoming.message[i]);
-			if (parsed_index != -1)
+			int parsed_index_memes = Data::parse_string_memes(incoming.message[i]);
+			int parsed_index_gifs = Data::parse_string_memes(incoming.message[i]);
+
+			parsed_index_memes = Data::parse_string_memes(incoming.message[i]);
+			parsed_index_gifs = Data::parse_string_gif(incoming.message[i]);
+
+			//memes
+			if (parsed_index_memes != -1)
 			{
 				for (int yolo = 0; yolo < rand() % 100; yolo++)//spawn multiple emotes
 				{
@@ -207,16 +187,38 @@ int main(int argc, char **argv)
 					}
 				}
 			}
+			
+			//gifs
+			if (parsed_index_gifs != -1)
+			{
+				int k = Data::createactor(active, meme_array_size);
+				if (k != -1)
+				{
+					meme_data[k].w = rand() % 100 + 50;
+					meme_data[k].h = rand() % 100 + 50;
+					meme_data[k].x = Data::screen_width / 2 - meme_data[k].w / 2;
+					meme_data[k].y = Data::screen_height / 2 - meme_data[k].h / 2;
+					meme_data[k].vel_x = 1.0 - 10.0*rand() / RAND_MAX;
+					meme_data[k].vel_y = 1.0 - 10.0*rand() / RAND_MAX;
+					meme_data[k].creation_time = current_time;
+					meme_data[k].meme_index = parsed_index;
+				}
+				else
+				{
+					printf("could not find inactive\n");
+				}
+
+			}
 		}
 
 		current_time = SDL_GetTicks();
 		for (int i = 0; i < incoming.n_count; i++)
 		{
-			int parsed_index = Data::parse_string(incoming.message[i]);
-			parsed_index = Data::parse_string(incoming.message[i]);
-			if (parsed_index != -1)
+			int parsed_index_memes = Data::parse_string_memes(incoming.message[i]);
+			int parsed_index_gifs = Data::parse_string_memes(incoming.message[i]);
+			parsed_index_memes = Data::parse_string_memes(incoming.message[i]);
+			if (parsed_index_memes != -1)
 			{
-	
 					last_time_speech = current_time;
 					cout << last_time_speech << endl;
 					mbstowcs(wstr, memes[parsed_index], buffer_size); //convert twitch messages into wide character
@@ -226,7 +228,6 @@ int main(int argc, char **argv)
 			}
 		}
 		
-
 		//destroy actor
 		for (int i = 0; i < meme_array_size; i++)
 		{
@@ -332,20 +333,21 @@ int main(int argc, char **argv)
 			}
 			
 			//draw le meme
-			Data::Draw(meme_data, i);
+			Data::Draw_Memes(meme_data, i);
 		}
-		/*
-		currentt_time = clock();
-		if (currentt_time-start_time >100)
+		
+		//handle gif processing here
+		current_time = clock();
+		if (current_time-start_time >100)
 		{
 				//cout << "miku" << endl;
-				miku_src.x = 0; //column
-				miku_src.y = (miku_src.y + 245) % 7350; //row
-				start_time = currentt_time;
+				//miku_src.x = 0; //column
+				//miku_src.y = (miku_src.y + 245) % 7350; //row
+				start_time = current_time;
 				//SDL_RenderCopyEx(Data::renderer, miku_texture, &miku_src, &miku_dest, 0, NULL, SDL_FLIP_NONE);
 		}
 
-		SDL_RenderCopyEx(Data::renderer, miku_texture, &miku_src, &miku_dest, 0, NULL, SDL_FLIP_NONE);*/
+		//SDL_RenderCopyEx(Data::renderer, miku_texture, &miku_src, &miku_dest, 0, NULL, SDL_FLIP_NONE);
 
 		SDL_RenderPresent(Data::renderer);
 	}

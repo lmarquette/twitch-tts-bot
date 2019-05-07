@@ -3,7 +3,10 @@
 
 using namespace std;
 
+//https://www.piskelapp.com/ for gif to sprite
+
 const int num_memes = 61;
+const int num_gifs = 10;
 
 char* memes[num_memes] = { "4head", "ayaya", "champ", "daijoubu", "dolan", "ehehe", "ezy", "feelsbadman",
 "feelsgoodman", "feelsweirdman", "gachibass", "gachigasm", "hahaa", "handsup", "heavybreathing", "hyperbruh",
@@ -13,11 +16,22 @@ char* memes[num_memes] = { "4head", "ayaya", "champ", "daijoubu", "dolan", "eheh
 "pog","pogey","poggers","pogu","pogyou","reeeee","residentsleeper","suchmeme","thisisfine","thonk","tuturu",
 "waitwhat","weirdchamp","wesmart","kappa" };
 
-//filenames
-char* meme_filenames[num_memes] = { "4head.png", "ayaya.png", "champ.png", "daijoubu.png", "dolan.png", "ehehe.png", "ezy.png", "feelsbadman.png",
-"feelsgoodman.png", "feelsweirdman.png", "gachibass.png", "gachigasm.png", "hahaa.png", "handsup.png", "heavybreathing.png", "hyperbruh.png",
-"hypers.png","kannanom.png", "kannapolice.png", "kappa.png", "klappa.png", "kreygasm.png", "lulw.png", "lul.jpg", "mikustare.png", "monkagun.png", "monkah.png",
-"monkahmm.png", "monkamega.png", "monkaS.png", "monkaw.png", "nepsmug.png", "nyanpasu.png", "ohisee.png", "okaychamp.png", "omegalul.png", "peeposad.png",
-"pepega.png","pepehands.png","pepelaugh.png","pepelmao.png","peperee.png","pepothink.png","pillowno.png","pillowyes.png","pogchamp.png",
-"pog.png","pogey.png","poggers.png","pogu.png","pogyou.png","reeeee.png","residentsleeper.png","suchmeme.png","thisisfine.png","thonk.png","tuturu.png",
-"waitwhat.png","weirdchamp.png","wesmart.png","kappa.png" };
+char* meme_filenames[num_memes] = { "Emotes/4head.png", "Emotes/ayaya.png", "Emotes/champ.png", "Emotes/daijoubu.png", "Emotes/dolan.png", "Emotes/ehehe.png", "Emotes/ezy.png", "Emotes/feelsbadman.png",
+"Emotes/feelsgoodman.png", "Emotes/feelsweirdman.png", "Emotes/gachibass.png", "Emotes/gachigasm.png", "Emotes/hahaa.png", "Emotes/handsup.png", "Emotes/heavybreathing.png", "Emotes/hyperbruh.png",
+"Emotes/hypers.png","Emotes/kannanom.png", "Emotes/kannapolice.png", "Emotes/kappa.png", "Emotes/klappa.png", "Emotes/kreygasm.png", "Emotes/lulw.png", "Emotes/lul.jpg", "Emotes/mikustare.png", "Emotes/monkagun.png", "Emotes/monkah.png",
+"Emotes/monkahmm.png", "Emotes/monkamega.png", "Emotes/monkaS.png", "Emotes/monkaw.png", "Emotes/nepsmug.png", "Emotes/nyanpasu.png", "Emotes/ohisee.png", "Emotes/okaychamp.png", "Emotes/omegalul.png", "Emotes/peeposad.png",
+"Emotes/pepega.png","Emotes/pepehands.png","Emotes/pepelaugh.png","Emotes/pepelmao.png","Emotes/peperee.png","Emotes/pepothink.png","Emotes/pillowno.png","Emotes/pillowyes.png","Emotes/pogchamp.png",
+"Emotes/pog.png","Emotes/pogey.png","Emotes/poggers.png","Emotes/pogu.png","Emotes/pogyou.png","Emotes/reeeee.png","Emotes/residentsleeper.png","Emotes/suchmeme.png","Emotes/thisisfine.png","Emotes/thonk.png","Emotes/tuturu.png",
+"Emotes/waitwhat.png","Emotes/weirdchamp.png","Emotes/wesmart.png","Emotes/kappa.png" };
+
+char* gifs[num_gifs] = { "miku_flip", "comeatmebro", "dealwithit", "dieinafire", "dumbass", 
+"fml", "panic", "smug", "spaz", "thumbsup" };
+
+char* gif_filenames[num_gifs] = { "gifs/miku_flip.png", "gifs/comeatmebro.png", "gifs/dealwithit.png", 
+"gifs/dieinafire.png", "gifs/dumbass.png", "gifs/fml.png", "gifs/panic.png", 
+"gifs/smug.png", "gifs/spaz.png", "gifs/thumbsup.png" };
+
+
+int gif_width[num_gifs] = { 245,400,446,400,504,480,269,498,128,500 };
+
+int gif_height[num_gifs] = { 245,225,228,225,240,270,270,285,128,281 };

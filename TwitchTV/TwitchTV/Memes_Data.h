@@ -23,10 +23,11 @@ namespace Data
 	SDL_Renderer *renderer = NULL;
 	int screen_width = 1920;
 	int screen_height = 1080;
-	const int num_memes = 61;
 	const int meme_buffer = 10000;
+	const int gif_buffer = 10000;
 	const int array_buffer = 1000;
 	SDL_Texture **meme_textures = (SDL_Texture**)malloc(sizeof(SDL_Texture*) * meme_buffer);
+	SDL_Texture **gif_textures = (SDL_Texture**)malloc(sizeof(SDL_Texture*) * gif_buffer);
 
 
 	void initialize_SDL()
@@ -49,6 +50,7 @@ namespace Data
 		int w, h;
 		float vel_x, vel_y;
 		int meme_index;
+		int gif_index;
 		unsigned int creation_time;
 	};
 
@@ -61,14 +63,25 @@ namespace Data
 	{
 		for (int i = 0; i < num_memes; i++)
 		{
-			SDL_Surface *tmp = IMG_Load(meme_filenames[i]);
-			meme_textures[i] = SDL_CreateTextureFromSurface(renderer, tmp);
+			SDL_Surface *tmp_meme = IMG_Load(meme_filenames[i]);
+			meme_textures[i] = SDL_CreateTextureFromSurface(renderer, tmp_meme);
 			if (meme_textures[i] == NULL) cout << meme_filenames[i] << " failed to load" << endl;
-			SDL_FreeSurface(tmp);
+			SDL_FreeSurface(tmp_meme);
 		}
 	}
 
-	void Draw(Meme_Data *d, int index)
+	void initialize_Gifs()
+	{
+		for (int i = 0; i < num_gifs; i++)
+		{
+			SDL_Surface *tmp_gif = IMG_Load(gif_filenames[i]);
+			gif_textures[i] = SDL_CreateTextureFromSurface(renderer, tmp_gif);
+			if (gif_textures[i] == NULL) cout << gif_filenames[i] << " failed to load" << endl;
+			SDL_FreeSurface(tmp_gif);
+		}
+	}
+
+	void Draw_Memes(Meme_Data *d, int index)
 	{
 		SDL_Rect screen_pos;
 		screen_pos.x = d[index].x;
@@ -77,7 +90,17 @@ namespace Data
 		screen_pos.h = d[index].h;
 
 		SDL_RenderCopyEx(renderer, meme_textures[d[index].meme_index], NULL, &screen_pos, 0, NULL, SDL_FLIP_NONE);
+	}
 
+	void Draw_Gifs(Meme_Data *d, int index)
+	{
+		SDL_Rect gif_screen_pos;
+		gif_screen_pos.x = d[index].x;
+		gif_screen_pos.y = d[index].y;
+		gif_screen_pos.w = d[index].w;
+		gif_screen_pos.h = d[index].h;
+
+		SDL_RenderCopyEx(renderer, gif_textures[d[index].gif_index], NULL, &gif_screen_pos, 0, NULL, SDL_FLIP_NONE);
 	}
 
 	int createactor(unsigned char *arr, int array_size)
@@ -97,17 +120,40 @@ namespace Data
 		active[index] = 0;
 	}
 
-	int parse_string(char* incoming_message)
+	int parse_string_gif(char* incoming_message)
 	{
 		static char lowercase[4096];
 		strcpy(lowercase, incoming_message);
 		char *compare;
 
+		//convert incoming messages to lowercase
 		for (int i = 0; i < strlen(incoming_message); i++)
 		{
 			lowercase[i] = tolower(incoming_message[i]);
 		}
 
+		//browse through gif array to find appropriate word
+		for (int i = 0; i < num_gifs; i++)
+		{
+			compare = strstr(lowercase, gifs[i]);
+			if (compare != NULL) return i;
+		}
+		return -1;
+	}
+
+	int parse_string_memes(char* incoming_message)
+	{
+		static char lowercase[4096];
+		strcpy(lowercase, incoming_message);
+		char *compare;
+
+		//convert incoming messages to lowercase
+		for (int i = 0; i < strlen(incoming_message); i++)
+		{
+			lowercase[i] = tolower(incoming_message[i]);
+		}
+
+		//browse through meme array to find appropriate word
 		for (int i = 0; i < num_memes; i++)
 		{
 			compare = strstr(lowercase, memes[i]);
