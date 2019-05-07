@@ -24,8 +24,9 @@ namespace Data
 	int screen_width = 1920;
 	int screen_height = 1080;
 	const int meme_buffer = 10000;
-	const int gif_buffer = 10000;
+	const int gif_buffer = 1000000;
 	const int array_buffer = 1000;
+	//SDL_Texture **tmp = (SDL_Texture**)malloc(sizeof(SDL_Texture*) * 10000);
 	SDL_Texture **meme_textures = (SDL_Texture**)malloc(sizeof(SDL_Texture*) * meme_buffer);
 	SDL_Texture **gif_textures = (SDL_Texture**)malloc(sizeof(SDL_Texture*) * gif_buffer);
 
@@ -35,12 +36,12 @@ namespace Data
 		SDL_Init(SDL_INIT_VIDEO);
 
 		SDL_Window *window = SDL_CreateWindow("Twitch Overlay", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Data::screen_width, Data::screen_height, SDL_WINDOW_SHOWN);
-		Data::renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
 		//Set background color on window
 		//Set color to what the screen is ignoring 
-		SDL_SetRenderDrawColor(Data::renderer, 0, 255, 0, 255);
-		SDL_RenderClear(Data::renderer);
+		SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+		SDL_RenderClear(renderer);
 
 	}
 

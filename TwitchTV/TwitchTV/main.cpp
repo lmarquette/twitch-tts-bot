@@ -77,9 +77,9 @@ int main(int argc, char **argv)
 	int parsed_index = -1;
 
 	//initialize
+	Data::initialize_SDL();
 	Data::intialize_Memes();
 	Data::initialize_Gifs();
-	Data::initialize_SDL();
 	srand(time(0));
 
 	//initialize network
