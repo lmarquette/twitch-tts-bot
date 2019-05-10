@@ -39,7 +39,6 @@ namespace Data
 		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
 		//Set background color on window
-		//Set color to what the screen is ignoring 
 		SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
 		SDL_RenderClear(renderer);
 
@@ -95,13 +94,15 @@ namespace Data
 
 	void Draw_Gifs(Meme_Data *d, int index)
 	{
-		SDL_Rect gif_screen_pos;
-		gif_screen_pos.x = d[index].x;
-		gif_screen_pos.y = d[index].y;
-		gif_screen_pos.w = d[index].w;
-		gif_screen_pos.h = d[index].h;
+		SDL_Rect gif_src;
+		gif_src.x = d[index].x;
+		gif_src.y = d[index].y;
+		gif_src.w = d[index].w;
+		gif_src.h = d[index].h;
+	
+		SDL_RenderCopyEx(renderer, gif_textures[d[index].gif_index], NULL, &gif_src, 0, NULL, SDL_FLIP_NONE);
 
-		SDL_RenderCopyEx(renderer, gif_textures[d[index].gif_index], NULL, &gif_screen_pos, 0, NULL, SDL_FLIP_NONE);
+		gif_src.y += gif_height[index];
 	}
 
 	int createactor(unsigned char *arr, int array_size)

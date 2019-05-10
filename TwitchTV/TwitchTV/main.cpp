@@ -61,14 +61,14 @@ int main(int argc, char **argv)
 
 	copy_n_count = number_of_copies_to_show;
 
-	int meme_array_size = 10000;
+	int array_size = 10000;
 
 	//Initialize Meme Data 
-	Data::Meme_Data *meme_data = new Data::Meme_Data[meme_array_size];
-	unsigned char *active = new unsigned char[meme_array_size];
+	Data::Meme_Data *meme_data = new Data::Meme_Data[array_size];
+	unsigned char *active = new unsigned char[array_size];
 
 	//intialize array to 0
-	for (int i = 0; i < meme_array_size; i++)
+	for (int i = 0; i < array_size; i++)
 	{
 		active[i] = 0;
 		Data::intialize_meme_data(&meme_data[i]);
@@ -167,15 +167,15 @@ int main(int argc, char **argv)
 			{
 				for (int yolo = 0; yolo < rand() % 100; yolo++)//spawn multiple emotes
 				{
-					int k = Data::createactor(active, meme_array_size);
+					int k = Data::createactor(active, array_size);
 					if (k != -1)
 					{
 						meme_data[k].w = rand() % 100 + 50;
 						meme_data[k].h = rand() % 100 + 50;
 						meme_data[k].x = Data::screen_width / 2 - meme_data[k].w / 2;
 						meme_data[k].y = Data::screen_height / 2 - meme_data[k].h / 2;
-						meme_data[k].vel_x = 1.0 - 10.0*rand() / RAND_MAX;
-						meme_data[k].vel_y = 1.0 - 10.0*rand() / RAND_MAX;
+						meme_data[k].vel_x = .15*rand() / RAND_MAX;
+						meme_data[k].vel_y = .15*rand() / RAND_MAX;
 						meme_data[k].creation_time = current_time;
 						meme_data[k].meme_index = parsed_index_memes;
 					}
@@ -189,9 +189,11 @@ int main(int argc, char **argv)
 			//gifs
 			if (parsed_index_gifs != -1)
 			{
-				int k = Data::createactor(active, meme_array_size);
+				int k = Data::createactor(active, array_size);
+				cout << k << endl;
 				if (k != -1)
 				{
+					cout << parsed_index_gifs << endl;
 					meme_data[k].w = gif_width[parsed_index_gifs];
 					meme_data[k].h = gif_height[parsed_index_gifs];
 					meme_data[k].x = Data::screen_width / 2 - meme_data[k].w / 2;
@@ -203,10 +205,10 @@ int main(int argc, char **argv)
 				{
 					printf("could not find inactive\n");
 				}
-
 			}
 		}
 
+		//tts
 		current_time = SDL_GetTicks();
 		for (int i = 0; i < incoming.n_count; i++)
 		{
@@ -221,7 +223,7 @@ int main(int argc, char **argv)
 		}
 		
 		//destroy actor
-		for (int i = 0; i < meme_array_size; i++)
+		for (int i = 0; i < array_size; i++)
 		{
 			if (active[i] == 0) continue;
 			if (current_time - meme_data[i].creation_time > 6000)
@@ -243,7 +245,6 @@ int main(int argc, char **argv)
 		dest.w = 30; //font size
 		dest.h = 30;
 
-		
 		//hard cap how many characters can scroll across the screen
 		//Render incoming.message[i] with font on the screen for users to see
 		current_time = clock();
@@ -251,7 +252,6 @@ int main(int argc, char **argv)
 		{
 			for (int i = current_copy_index; i < current_copy_index + number_of_copies_to_show; i++)
 			{
-
 				//output username
 				SDL_Rect src;
 				for (int j = 0; j < strlen(copy_username[i]); j++)
@@ -300,7 +300,7 @@ int main(int argc, char **argv)
 		}
 
 		//render memes on the page
-		for (int i = 0; i < meme_array_size; i++)
+		for (int i = 0; i < array_size; i++)
 		{
 			if (active[i] == 0) continue;
 			meme_data[i].x += meme_data[i].vel_x;
@@ -323,13 +323,13 @@ int main(int argc, char **argv)
 			{
 				meme_data[i].vel_y *= -1;
 			}
-			
 			//draw le meme
 			Data::Draw_Memes(meme_data, i);
 		}
-		
+
 		//handle gif processing here
 		current_time = clock();
+		/*
 		if (current_time-start_time >100)
 		{
 				//cout << "miku" << endl;
@@ -338,7 +338,7 @@ int main(int argc, char **argv)
 				start_time = current_time;
 				//SDL_RenderCopyEx(Data::renderer, miku_texture, &miku_src, &miku_dest, 0, NULL, SDL_FLIP_NONE);
 		}
-
+		*/
 		//SDL_RenderCopyEx(Data::renderer, miku_texture, &miku_src, &miku_dest, 0, NULL, SDL_FLIP_NONE);
 
 		SDL_RenderPresent(Data::renderer);
