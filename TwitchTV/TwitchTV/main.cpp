@@ -190,16 +190,15 @@ int main(int argc, char **argv)
 			if (parsed_index_gifs != -1)
 			{
 				int k = Data::createactor(active, array_size);
-				cout << k << endl;
 				if (k != -1)
 				{
-					cout << parsed_index_gifs << endl;
 					meme_data[k].w = gif_width[parsed_index_gifs];
 					meme_data[k].h = gif_height[parsed_index_gifs];
 					meme_data[k].x = Data::screen_width / 2 - meme_data[k].w / 2;
-					meme_data[k].y = Data::screen_height + gif_height[parsed_index_gifs];
+					meme_data[k].y = Data::screen_height / 2;
+					//meme_data[k].y = Data::screen_height + gif_height[parsed_index_gifs];
 					meme_data[k].creation_time = current_time;
-					meme_data[k].meme_index = parsed_index_gifs;
+					meme_data[k].gif_index = parsed_index_gifs;
 				}
 				else
 				{
@@ -326,20 +325,12 @@ int main(int argc, char **argv)
 			//draw le meme
 			Data::Draw_Memes(meme_data, i);
 		}
-
-		//handle gif processing here
-		current_time = clock();
-		/*
-		if (current_time-start_time >100)
+		
+		for (int i = 0; i < array_size; i++)
 		{
-				//cout << "miku" << endl;
-				//miku_src.x = 0; //column
-				//miku_src.y = (miku_src.y + 245) % 7350; //row
-				start_time = current_time;
-				//SDL_RenderCopyEx(Data::renderer, miku_texture, &miku_src, &miku_dest, 0, NULL, SDL_FLIP_NONE);
+			if (active[i] == 0) continue;
+			Data::Draw_Gifs(meme_data, i, parsed_index_gifs);
 		}
-		*/
-		//SDL_RenderCopyEx(Data::renderer, miku_texture, &miku_src, &miku_dest, 0, NULL, SDL_FLIP_NONE);
 
 		SDL_RenderPresent(Data::renderer);
 	}
