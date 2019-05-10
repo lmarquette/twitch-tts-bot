@@ -74,7 +74,8 @@ int main(int argc, char **argv)
 		Data::intialize_meme_data(&meme_data[i]);
 	}
 
-	int parsed_index = -1;
+	int parsed_index_memes = -1;
+	int parsed_index_gifs = -1;
 
 	//initialize
 	Data::initialize_SDL();
@@ -158,9 +159,6 @@ int main(int argc, char **argv)
 			//printf("%s@%s|(%.2f)->%s\n", incoming.username[i], incoming.channel[i], (double)timestamp / CLOCKS_PER_SEC, incoming.message[i]);
 
 			//parse messages and grabs which index the meme is at in the array
-			int parsed_index_memes = Data::parse_string_memes(incoming.message[i]);
-			int parsed_index_gifs = Data::parse_string_memes(incoming.message[i]);
-
 			parsed_index_memes = Data::parse_string_memes(incoming.message[i]);
 			parsed_index_gifs = Data::parse_string_gif(incoming.message[i]);
 
@@ -179,7 +177,7 @@ int main(int argc, char **argv)
 						meme_data[k].vel_x = 1.0 - 10.0*rand() / RAND_MAX;
 						meme_data[k].vel_y = 1.0 - 10.0*rand() / RAND_MAX;
 						meme_data[k].creation_time = current_time;
-						meme_data[k].meme_index = parsed_index;
+						meme_data[k].meme_index = parsed_index_memes;
 					}
 					else
 					{
@@ -194,14 +192,12 @@ int main(int argc, char **argv)
 				int k = Data::createactor(active, meme_array_size);
 				if (k != -1)
 				{
-					meme_data[k].w = rand() % 100 + 50;
-					meme_data[k].h = rand() % 100 + 50;
+					meme_data[k].w = gif_width[parsed_index_gifs];
+					meme_data[k].h = gif_height[parsed_index_gifs];
 					meme_data[k].x = Data::screen_width / 2 - meme_data[k].w / 2;
-					meme_data[k].y = Data::screen_height / 2 - meme_data[k].h / 2;
-					meme_data[k].vel_x = 1.0 - 10.0*rand() / RAND_MAX;
-					meme_data[k].vel_y = 1.0 - 10.0*rand() / RAND_MAX;
+					meme_data[k].y = Data::screen_height + gif_height[parsed_index_gifs];
 					meme_data[k].creation_time = current_time;
-					meme_data[k].meme_index = parsed_index;
+					meme_data[k].meme_index = parsed_index_gifs;
 				}
 				else
 				{
@@ -214,17 +210,13 @@ int main(int argc, char **argv)
 		current_time = SDL_GetTicks();
 		for (int i = 0; i < incoming.n_count; i++)
 		{
-			int parsed_index_memes = Data::parse_string_memes(incoming.message[i]);
-			int parsed_index_gifs = Data::parse_string_memes(incoming.message[i]);
 			parsed_index_memes = Data::parse_string_memes(incoming.message[i]);
 			if (parsed_index_memes != -1)
 			{
 					last_time_speech = current_time;
-					cout << last_time_speech << endl;
-					mbstowcs(wstr, memes[parsed_index], buffer_size); //convert twitch messages into wide character
+					mbstowcs(wstr, memes[parsed_index_memes], buffer_size); //convert twitch messages into wide character
 					pVoice->Speak(wstr, SVSFlagsAsync, NULL); //output twitch messages
 					break;
-				
 			}
 		}
 		

@@ -35,3 +35,5 @@ char* gif_filenames[num_gifs] = { "gifs/miku_flip.png", "gifs/comeatmebro.png", 
 int gif_width[num_gifs] = { 245,400,446,400,504,480,269,498,128,500 };
 
 int gif_height[num_gifs] = { 245,225,228,225,240,270,270,285,128,281 };
+
+int frames[num_gifs] = { 30,39,37,10,69,222,12,17,12,42 };
