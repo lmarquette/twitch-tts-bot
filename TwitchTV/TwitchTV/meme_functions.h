@@ -96,10 +96,14 @@ namespace Data
 		screen_pos.y = d[index].y;
 		screen_pos.w = d[index].w;
 		screen_pos.h = d[index].h;
-		gif_src.y = (gif_src.y + gif_height[parsed_index]) % gif_total_height[parsed_index];
+
+		gif_src.y += gif_height[parsed_index];
+		if (gif_src.y >= gif_total_height[parsed_index]) gif_src.y = 0;
+		//gif_src.y = (gif_src.y + gif_height[parsed_index]) % gif_total_height[parsed_index];
 		gif_src.w = gif_width[parsed_index];
 		gif_src.h = gif_height[parsed_index];
 		SDL_RenderCopyEx(renderer, gif_textures[d[index].gif_index], &gif_src, &screen_pos, 0, NULL, SDL_FLIP_NONE);
+
 	}
 
 	int create_actor_memes(unsigned char *arr, int array_size)

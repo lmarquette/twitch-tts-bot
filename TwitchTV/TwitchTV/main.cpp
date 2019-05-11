@@ -19,11 +19,9 @@ using namespace std;
 
 #include "twitchcode.h"
 #include "stringvector.h"
-//#include "ReadfromFile.h"
 
 #include <sapi.h>
-//#include <sphelper.h>
-//#include <atlbase.h>
+
 
 const long long int buffer_size = 10000;
 
@@ -233,7 +231,7 @@ int main(int argc, char **argv)
 		for (int i = 0; i < gif_array_size; i++)
 		{
 			if (active_gif[i] == 0) continue;
-			if (current_time - gif_data[i].creation_time > 1000)
+			if (current_time - gif_data[i].creation_time > 10000)
 			{
 				Data::destroy_actor(active_gif, i);
 			}
@@ -253,7 +251,7 @@ int main(int argc, char **argv)
 		dest.h = 30;
 
 		//Render incoming.message[i] with font on the screen for users to see
-		current_time = SDL_GetTicks();
+		//current_time = SDL_GetTicks();
 		if (current_time - start_time > 100)
 		{
 			for (int i = current_copy_index; i < current_copy_index + number_of_copies_to_show; i++)
@@ -333,16 +331,14 @@ int main(int argc, char **argv)
 			Data::draw_meme(meme_data, i);
 		}
 
+		
 		current_time = SDL_GetTicks();
 		for (int i = 0; i < gif_array_size; i++)
 		{
 			if (active_gif[i] == 0) continue;
-			if (current_time - last_gif_frame_updated[i] >= .00000001)
+			if (current_time - last_gif_frame_updated[i] > 1)
 			{
 				last_gif_frame_updated[i] = current_time;
-				gif_src.y = (gif_src.y + gif_height[parsed_index_gifs]) % gif_total_height[parsed_index_gifs];
-				gif_src.w = gif_width[parsed_index_gifs];
-				gif_src.h = gif_height[parsed_index_gifs];
 				draw_gif(gif_data, i, parsed_index_gifs);
 			}
 		}
