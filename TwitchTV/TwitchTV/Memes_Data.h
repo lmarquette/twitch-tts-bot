@@ -26,11 +26,11 @@ namespace Data
 	const int meme_buffer = 10000;
 	const int gif_buffer = 1000000;
 	const int array_buffer = 1000;
-	//SDL_Texture **tmp = (SDL_Texture**)malloc(sizeof(SDL_Texture*) * 10000);
+	unsigned int *last_frame_updated;
+
 	SDL_Texture **meme_textures = (SDL_Texture**)malloc(sizeof(SDL_Texture*) * meme_buffer);
 	SDL_Texture **gif_textures = (SDL_Texture**)malloc(sizeof(SDL_Texture*) * gif_buffer);
 	SDL_Rect gif_src = { 0,0,0,0 };
-
 
 	void initialize_SDL()
 	{
@@ -58,6 +58,7 @@ namespace Data
 	void intialize_meme_data(Meme_Data *d)
 	{
 		*d = { 0 };
+		last_frame_updated = (unsigned int*)malloc(sizeof(unsigned int) * array_buffer);
 	}
 
 	void intialize_Memes()
@@ -95,18 +96,15 @@ namespace Data
 
 	void Draw_Gifs(Meme_Data *d, int index, int parsed_index)
 	{
-		cout << parsed_index << endl;
 		SDL_Rect screen_pos;
 		screen_pos.x = d[index].x;
 		screen_pos.y = d[index].y;
 		screen_pos.w = d[index].w;
 		screen_pos.h = d[index].h;
 		
-
 		gif_src.y = (gif_src.y + gif_height[parsed_index]) % gif_total_height[parsed_index];
 		gif_src.w = gif_width[parsed_index];
 		gif_src.h = gif_height[parsed_index];
-		cout << "y: " << gif_src.y << endl;
 		SDL_RenderCopyEx(renderer, gif_textures[d[index].gif_index], &gif_src, &screen_pos, 0, NULL, SDL_FLIP_NONE);
 	}
 
