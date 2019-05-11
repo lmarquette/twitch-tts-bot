@@ -246,7 +246,7 @@ int main(int argc, char **argv)
 
 		//hard cap how many characters can scroll across the screen
 		//Render incoming.message[i] with font on the screen for users to see
-		current_time = clock();
+		current_time = SDL_GetTicks();
 		if (current_time - start_time > 100)
 		{
 			for (int i = current_copy_index; i < current_copy_index + number_of_copies_to_show; i++)
@@ -325,11 +325,16 @@ int main(int argc, char **argv)
 			//draw le meme
 			Data::Draw_Memes(meme_data, i);
 		}
-		
+
+		current_time = SDL_GetTicks();
 		for (int i = 0; i < array_size; i++)
 		{
 			if (active[i] == 0) continue;
-			Data::Draw_Gifs(meme_data, i, parsed_index_gifs);
+			if (current_time - Data::last_frame_updated[i] > 100)
+			{
+				Data::last_frame_updated[i] = current_time;
+				Data::Draw_Gifs(meme_data, i, parsed_index_gifs);
+			}
 		}
 
 		SDL_RenderPresent(Data::renderer);
