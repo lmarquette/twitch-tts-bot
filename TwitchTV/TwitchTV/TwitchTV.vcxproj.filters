@@ -29,10 +29,13 @@
     <ClInclude Include="ReadfromFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Memes.h">
+    <ClInclude Include="meme_functions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Memes_Data.h">
+    <ClInclude Include="meme_data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="meme_function_variables.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

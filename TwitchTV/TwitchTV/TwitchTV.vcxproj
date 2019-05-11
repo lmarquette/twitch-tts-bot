@@ -114,8 +114,9 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Memes.h" />
-    <ClInclude Include="Memes_Data.h" />
+    <ClInclude Include="meme_data.h" />
+    <ClInclude Include="meme_functions.h" />
+    <ClInclude Include="meme_function_variables.h" />
     <ClInclude Include="ReadfromFile.h" />
     <ClInclude Include="stringvector.h" />
     <ClInclude Include="twitchcode.h" />
