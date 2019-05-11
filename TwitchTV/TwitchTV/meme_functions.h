@@ -20,6 +20,8 @@ namespace Data
 		float vel_x, vel_y;
 		int gif_index;
 		unsigned int creation_time;
+		int current_frame;
+		SDL_Rect gif_src;
 	};
 
 	void intialize_meme_data(meme_data *d)
@@ -89,7 +91,7 @@ namespace Data
 		SDL_RenderCopyEx(renderer, meme_textures[d[index].meme_index], NULL, &screen_pos, 0, NULL, SDL_FLIP_NONE);
 	}
 
-	void draw_gif(gif_data *d, int index, int parsed_index)
+	void draw_gif(gif_data *d, int index)
 	{
 		SDL_Rect screen_pos;
 		screen_pos.x = d[index].x;
@@ -97,13 +99,14 @@ namespace Data
 		screen_pos.w = d[index].w;
 		screen_pos.h = d[index].h;
 
-		gif_src.y += gif_height[parsed_index];
-		if (gif_src.y >= gif_total_height[parsed_index]) gif_src.y = 0;
-		//gif_src.y = (gif_src.y + gif_height[parsed_index]) % gif_total_height[parsed_index];
-		gif_src.w = gif_width[parsed_index];
-		gif_src.h = gif_height[parsed_index];
-		SDL_RenderCopyEx(renderer, gif_textures[d[index].gif_index], &gif_src, &screen_pos, 0, NULL, SDL_FLIP_NONE);
-
+		//d[index].gif_index is the parsed value from gif array
+		//src.y = current_frame * height;
+		//src.w = gif_width
+		//src.h = gif_height
+		d[index].gif_src.y = d->current_frame * gif_height[d[index].gif_index];
+		d[index].gif_src.w = gif_width[d[index].gif_index];
+		d[index].gif_src.h = gif_height[d[index].gif_index];
+		SDL_RenderCopyEx(renderer, gif_textures[d[index].gif_index], &d[index].gif_src, &screen_pos, 0, NULL, SDL_FLIP_NONE);
 	}
 
 	int create_actor_memes(unsigned char *arr, int array_size)

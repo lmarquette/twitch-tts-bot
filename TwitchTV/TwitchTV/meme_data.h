@@ -38,4 +38,4 @@ int gif_height[num_gifs] = { 245,225,228,225,240,270,270,285,128,281 };
 
 long int gif_total_height[num_gifs] = { 7350,8775,10656,2250,16560,59940,3240,4845,1536,11802 };
 
-int gif_frame[num_gifs] = { 30,39,37,10,69,222,12,17,12,42 };
+int gif_number_of_frames[num_gifs] = { 30,39,37,10,69,222,12,17,12,42 };

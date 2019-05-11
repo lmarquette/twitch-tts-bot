@@ -131,7 +131,7 @@ int main(int argc, char **argv)
 		{
 			if (event.type == SDL_QUIT)
 			{
-				break;
+				return 0;
 			}
 		}
 
@@ -195,6 +195,9 @@ int main(int argc, char **argv)
 					//gif_data[k].y = Data::screen_height + gif_height[parsed_index_gifs];
 					gif_data[k].creation_time = current_time;
 					gif_data[k].gif_index = parsed_index_gifs;
+
+					cout << "parsed gif: " << parsed_index_gifs << endl;
+					cout << "What index: " << k << endl;
 				}
 				else
 				{
@@ -336,11 +339,17 @@ int main(int argc, char **argv)
 		for (int i = 0; i < gif_array_size; i++)
 		{
 			if (active_gif[i] == 0) continue;
-			if (current_time - last_gif_frame_updated[i] > 1)
+			//update gif frame
+			if (current_time - last_gif_frame_updated[i] > 50)
 			{
 				last_gif_frame_updated[i] = current_time;
-				draw_gif(gif_data, i, parsed_index_gifs);
+				//current_frame++;
+				//cout << "draw gif index: " << gif_data[i].gif_index << endl;
+				//if current_frame > total frames set current frame to 0
+				gif_data[i].current_frame++;
+				if (gif_data[i].current_frame >= gif_height[gif_data[i].gif_index]) gif_data[i].current_frame = 0;
 			}
+			draw_gif(gif_data, i);
 		}
 
 		SDL_RenderPresent(renderer);

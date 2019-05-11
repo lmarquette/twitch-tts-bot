@@ -1,0 +1,17 @@
+﻿main.obj : error LNK2019: unresolved external symbol SDL_FreeSurface referenced in function "void __cdecl Data::initialize_gifs(void)" (?initialize_gifs@Data@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol SDL_CreateWindow referenced in function "void __cdecl Data::initialize_sdl(void)" (?initialize_sdl@Data@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol SDL_PollEvent referenced in function SDL_main
+main.obj : error LNK2019: unresolved external symbol SDL_CreateRenderer referenced in function "void __cdecl Data::initialize_sdl(void)" (?initialize_sdl@Data@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol SDL_CreateTextureFromSurface referenced in function "void __cdecl Data::initialize_gifs(void)" (?initialize_gifs@Data@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol SDL_SetRenderDrawColor referenced in function "void __cdecl Data::initialize_sdl(void)" (?initialize_sdl@Data@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol SDL_RenderClear referenced in function "void __cdecl Data::initialize_sdl(void)" (?initialize_sdl@Data@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol SDL_RenderCopyEx referenced in function "void __cdecl Data::draw_gif(struct Data::gif_data *,int,int)" (?draw_gif@Data@@YAXPEAUgif_data@1@HH@Z)
+main.obj : error LNK2019: unresolved external symbol SDL_RenderPresent referenced in function SDL_main
+main.obj : error LNK2019: unresolved external symbol SDL_GetTicks referenced in function SDL_main
+main.obj : error LNK2019: unresolved external symbol SDL_Init referenced in function "void __cdecl Data::initialize_sdl(void)" (?initialize_sdl@Data@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol IMG_Load referenced in function "void __cdecl Data::initialize_gifs(void)" (?initialize_gifs@Data@@YAXXZ)
+MSVCRTD.lib(exe_main.obj) : error LNK2019: unresolved external symbol main referenced in function "int __cdecl invoke_main(void)" (?invoke_main@@YAHXZ)
+SDL2-2.0.9\lib\x86\SDL2.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+SDL2-2.0.9\lib\x86\SDL2main.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+SDL2-2.0.9\lib\x86\SDL2_image.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+E:\Github\twitch-tts-bot\TwitchTV\TwitchTV\x64\Debug\TwitchTV.exe : fatal error LNK1120: 13 unresolved externals

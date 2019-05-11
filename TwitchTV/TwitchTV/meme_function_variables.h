@@ -28,4 +28,3 @@ unsigned int *last_gif_frame_updated;
 
 SDL_Texture **meme_textures = NULL;
 SDL_Texture **gif_textures = NULL;
-SDL_Rect gif_src = { 0,0,0,0 };
