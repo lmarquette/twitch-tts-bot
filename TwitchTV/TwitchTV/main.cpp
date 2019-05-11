@@ -61,20 +61,27 @@ int main(int argc, char **argv)
 
 	copy_n_count = number_of_copies_to_show;
 
-	int array_size = 10000;
+	int meme_array_size = 10000;
+	int gif_array_size = 5000;
 
 	//Initialize Meme Data 
-	Data::meme_data *meme_data = new Data::meme_data[array_size];
-	unsigned char *active_meme = new unsigned char[array_size];
-	unsigned char *active_gif = new unsigned char[array_size];
+	Data::meme_data *meme_data = new Data::meme_data[meme_array_size];
+	Data::gif_data *gif_data = new Data::gif_data[gif_array_size];
+	unsigned char *active_meme = new unsigned char[meme_array_size];
+	unsigned char *active_gif = new unsigned char[gif_array_size];
 
-	//intialize array to 0
-	for (int i = 0; i < array_size; i++)
+	//intialize meme array to 0
+	for (int i = 0; i < meme_array_size; i++)
 	{
 		active_meme[i] = 0;
-		active_gif[i] = 0;
 		Data::intialize_meme_data(&meme_data[i]);
-		last_frame_updated[i] = 0;
+	}
+
+	//initialize gif array to 0
+	for (int i = 0; i < gif_array_size; i++)
+	{
+		active_gif[i] = 0;
+		Data::intialize_gif_data(&gif_data[i]);
 	}
 
 	int parsed_index_memes = -1;
@@ -84,6 +91,7 @@ int main(int argc, char **argv)
 	Data::initialize_sdl();
 	Data::intialize_memes();
 	Data::initialize_gifs();
+	Data::intialize_gif_frame_update();
 	srand(time(0));
 
 	//initialize network
@@ -156,7 +164,7 @@ int main(int argc, char **argv)
 			{
 				for (int yolo = 0; yolo < rand() % 100; yolo++)//spawn multiple emotes
 				{
-					int k = Data::create_actor_memes(active_meme, array_size);
+					int k = Data::create_actor_memes(active_meme, meme_array_size);
 					if (k != -1)
 					{
 						meme_data[k].w = rand() % 100 + 50;
@@ -178,17 +186,17 @@ int main(int argc, char **argv)
 			//create gif
 			if (parsed_index_gifs != -1)
 			{
-				int k = Data::create_actor_gifs(active_gif, array_size);
+				int k = Data::create_actor_gifs(active_gif, gif_array_size);
 				if (k != -1)
 				{
 					cout << gif_width[parsed_index_gifs] << endl;
-					meme_data[k].w = gif_width[parsed_index_gifs];
-					meme_data[k].h = gif_height[parsed_index_gifs];
-					meme_data[k].x = screen_width / 2 - meme_data[k].w / 2;
-					meme_data[k].y = screen_height / 2;
-					//meme_data[k].y = Data::screen_height + gif_height[parsed_index_gifs];
-					meme_data[k].creation_time = current_time;
-					meme_data[k].gif_index = parsed_index_gifs;
+					gif_data[k].w = gif_width[parsed_index_gifs];
+					gif_data[k].h = gif_height[parsed_index_gifs];
+					gif_data[k].x = screen_width / 2 - gif_data[k].w / 2;
+					gif_data[k].y = screen_height / 2;
+					//gif_data[k].y = Data::screen_height + gif_height[parsed_index_gifs];
+					gif_data[k].creation_time = current_time;
+					gif_data[k].gif_index = parsed_index_gifs;
 				}
 				else
 				{
@@ -212,7 +220,7 @@ int main(int argc, char **argv)
 		}
 		
 		//destroy meme
-		for (int i = 0; i < array_size; i++)
+		for (int i = 0; i < meme_array_size; i++)
 		{
 			if (active_meme[i] == 0) continue;
 			if (current_time - meme_data[i].creation_time > 4000)
@@ -222,10 +230,10 @@ int main(int argc, char **argv)
 		}
 
 		//destroy gif
-		for (int i = 0; i < array_size; i++)
+		for (int i = 0; i < gif_array_size; i++)
 		{
 			if (active_gif[i] == 0) continue;
-			if (current_time - meme_data[i].creation_time > 6000)
+			if (current_time - gif_data[i].creation_time > 1000)
 			{
 				Data::destroy_actor(active_gif, i);
 			}
@@ -298,7 +306,7 @@ int main(int argc, char **argv)
 		}
 
 		//render memes on the page
-		for (int i = 0; i < array_size; i++)
+		for (int i = 0; i < meme_array_size; i++)
 		{
 			if (active_meme[i] == 0) continue;
 			meme_data[i].x += meme_data[i].vel_x;
@@ -326,13 +334,16 @@ int main(int argc, char **argv)
 		}
 
 		current_time = SDL_GetTicks();
-		for (int i = 0; i < array_size; i++)
+		for (int i = 0; i < gif_array_size; i++)
 		{
 			if (active_gif[i] == 0) continue;
-			if (current_time - last_frame_updated[i] > .7)
+			if (current_time - last_gif_frame_updated[i] >= .00000001)
 			{
-				last_frame_updated[i] = current_time;
-				draw_gif(meme_data, i, parsed_index_gifs);
+				last_gif_frame_updated[i] = current_time;
+				gif_src.y = (gif_src.y + gif_height[parsed_index_gifs]) % gif_total_height[parsed_index_gifs];
+				gif_src.w = gif_width[parsed_index_gifs];
+				gif_src.h = gif_height[parsed_index_gifs];
+				draw_gif(gif_data, i, parsed_index_gifs);
 			}
 		}
 

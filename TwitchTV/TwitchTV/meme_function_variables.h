@@ -24,7 +24,7 @@ int screen_height = 1080;
 const int meme_buffer_size = 10000;
 const int gif_buffer_size = 1000000;
 const int frame_buffer_size = 10000;
-unsigned int *last_frame_updated;
+unsigned int *last_gif_frame_updated;
 
 SDL_Texture **meme_textures = NULL;
 SDL_Texture **gif_textures = NULL;

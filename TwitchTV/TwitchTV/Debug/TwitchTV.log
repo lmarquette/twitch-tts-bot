@@ -1,30 +1,30 @@
 ﻿  main.cpp
-e:\github\twitch-tts-bot\twitchtv\twitchtv\meme_functions.h(63): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-e:\github\twitch-tts-bot\twitchtv\twitchtv\meme_functions.h(64): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-e:\github\twitch-tts-bot\twitchtv\twitchtv\meme_functions.h(74): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-e:\github\twitch-tts-bot\twitchtv\twitchtv\meme_functions.h(75): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-e:\github\twitch-tts-bot\twitchtv\twitchtv\meme_functions.h(120): warning C4018: '<': signed/unsigned mismatch
+e:\github\twitch-tts-bot\twitchtv\twitchtv\meme_functions.h(84): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+e:\github\twitch-tts-bot\twitchtv\twitchtv\meme_functions.h(85): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+e:\github\twitch-tts-bot\twitchtv\twitchtv\meme_functions.h(95): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+e:\github\twitch-tts-bot\twitchtv\twitchtv\meme_functions.h(96): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
 e:\github\twitch-tts-bot\twitchtv\twitchtv\meme_functions.h(141): warning C4018: '<': signed/unsigned mismatch
+e:\github\twitch-tts-bot\twitchtv\twitchtv\meme_functions.h(162): warning C4018: '<': signed/unsigned mismatch
 e:\github\twitch-tts-bot\twitchtv\twitchtv\twitchcode.h(205): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
 e:\github\twitch-tts-bot\twitchtv\twitchtv\stringvector.h(23): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
 e:\github\twitch-tts-bot\twitchtv\twitchtv\stringvector.h(61): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
 e:\github\twitch-tts-bot\twitchtv\twitchtv\stringvector.h(100): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
 e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(56): warning C4018: '<': signed/unsigned mismatch
-e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(87): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(118): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(164): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(165): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(166): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(167): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(187): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(188): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(242): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(243): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(251): warning C4018: '<': signed/unsigned mismatch
-e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(255): warning C4018: '<': signed/unsigned mismatch
-e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(273): warning C4018: '<': signed/unsigned mismatch
-e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(291): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(292): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-e:\github\twitch-tts-bot\twitchtv\twitchtv\meme_functions.h(94): warning C4715: 'Data::create_actor_memes': not all control paths return a value
-e:\github\twitch-tts-bot\twitchtv\twitchtv\meme_functions.h(106): warning C4715: 'Data::create_actor_gifs': not all control paths return a value
+e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(95): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(126): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(172): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(173): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(174): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(175): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(195): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(196): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(250): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(251): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(259): warning C4018: '<': signed/unsigned mismatch
+e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(263): warning C4018: '<': signed/unsigned mismatch
+e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(281): warning C4018: '<': signed/unsigned mismatch
+e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(299): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(300): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+e:\github\twitch-tts-bot\twitchtv\twitchtv\meme_functions.h(115): warning C4715: 'Data::create_actor_memes': not all control paths return a value
+e:\github\twitch-tts-bot\twitchtv\twitchtv\meme_functions.h(127): warning C4715: 'Data::create_actor_gifs': not all control paths return a value
   TwitchTV.vcxproj -> E:\Github\twitch-tts-bot\TwitchTV\TwitchTV\Debug\TwitchTV.exe

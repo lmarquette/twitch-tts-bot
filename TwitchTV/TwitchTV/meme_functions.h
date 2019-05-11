@@ -4,6 +4,44 @@
 
 namespace Data
 {
+	struct meme_data
+	{
+		float x, y;
+		int w, h;
+		float vel_x, vel_y;
+		int meme_index;
+		unsigned int creation_time;
+	};
+
+	struct gif_data
+	{
+		float x, y;
+		int w, h;
+		float vel_x, vel_y;
+		int gif_index;
+		unsigned int creation_time;
+	};
+
+	void intialize_meme_data(meme_data *d)
+	{
+		*d = { 0 };
+	}
+
+	void intialize_gif_data(gif_data *d)
+	{
+		*d = { 0 };
+	}
+
+	void intialize_gif_frame_update()
+	{
+		last_gif_frame_updated = (unsigned int*)malloc(sizeof(unsigned int) * frame_buffer_size);
+		
+		for (int i = 0; i < frame_buffer_size; i++)
+		{
+			last_gif_frame_updated[i] = 0;
+		}
+	}
+
 	void initialize_sdl()
 	{
 		SDL_Init(SDL_INIT_VIDEO);
@@ -12,25 +50,8 @@ namespace Data
 		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
 		//Set background color on window
-		SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
-
-	}
-
-	struct meme_data
-	{
-		float x, y;
-		int w, h;
-		float vel_x, vel_y;
-		int meme_index;
-		int gif_index;
-		unsigned int creation_time;
-	};
-
-	void intialize_meme_data(meme_data *d)
-	{
-		*d = { 0 };
-		last_frame_updated = (unsigned int*)malloc(sizeof(unsigned int) * frame_buffer_size);
 	}
 
 	void intialize_memes()
@@ -68,7 +89,7 @@ namespace Data
 		SDL_RenderCopyEx(renderer, meme_textures[d[index].meme_index], NULL, &screen_pos, 0, NULL, SDL_FLIP_NONE);
 	}
 
-	void draw_gif(meme_data *d, int index, int parsed_index)
+	void draw_gif(gif_data *d, int index, int parsed_index)
 	{
 		SDL_Rect screen_pos;
 		screen_pos.x = d[index].x;
