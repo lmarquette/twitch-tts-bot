@@ -25,6 +25,6 @@ e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(261): warning C4018: '<': si
 e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(279): warning C4018: '<': signed/unsigned mismatch
 e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(297): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
 e:\github\twitch-tts-bot\twitchtv\twitchtv\main.cpp(298): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-e:\github\twitch-tts-bot\twitchtv\twitchtv\meme_functions.h(119): warning C4715: 'Data::create_actor_memes': not all control paths return a value
 e:\github\twitch-tts-bot\twitchtv\twitchtv\meme_functions.h(131): warning C4715: 'Data::create_actor_gifs': not all control paths return a value
+e:\github\twitch-tts-bot\twitchtv\twitchtv\meme_functions.h(119): warning C4715: 'Data::create_actor_memes': not all control paths return a value
   TwitchTV.vcxproj -> E:\Github\twitch-tts-bot\TwitchTV\TwitchTV\Debug\TwitchTV.exe
