@@ -24,24 +24,38 @@ namespace Data
 		SDL_Rect gif_src;
 	};
 
-	void intialize_meme_data(meme_data *d)
+	struct particle_system
+	{
+		int r, g, b;
+		float x, y;
+		int w, h;
+		float vel_x, vel_y;
+		double gravity;
+		unsigned int creation_time;
+	};
+
+	void initialize_meme_data(meme_data *d)
 	{
 		*d = { 0 };
 	}
 
-	void intialize_gif_data(gif_data *d)
+	void initialize_gif_data(gif_data *d)
 	{
 		*d = { 0 };
 	}
 
-	void intialize_gif_frame_update()
+	void initiailize_particle_system(particle_system *d)
 	{
-		last_gif_frame_updated = (unsigned int*)malloc(sizeof(unsigned int) * frame_buffer_size);
-		
-		for (int i = 0; i < frame_buffer_size; i++)
-		{
-			last_gif_frame_updated[i] = 0;
-		}
+		d->r = 255;
+		d->g = 0;
+		d->b = 0;
+		d->w = 10;
+		d->h = 10;
+		d->vel_x = 0;
+		d->vel_y = 0;
+		d->gravity = .1;
+		d->x = screen_width / 2;
+		d->y = screen_height / 2;
 	}
 
 	void initialize_sdl()
@@ -50,13 +64,9 @@ namespace Data
 
 		SDL_Window *window = SDL_CreateWindow("Twitch Overlay", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen_width, screen_height, SDL_WINDOW_SHOWN);
 		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
-		//Set background color on window
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-		SDL_RenderClear(renderer);
 	}
 
-	void intialize_memes()
+	void initialize_memes()
 	{
 		meme_textures = (SDL_Texture**)malloc(sizeof(SDL_Texture*) * meme_buffer_size);
 		for (int i = 0; i < num_memes; i++)
@@ -80,6 +90,34 @@ namespace Data
 		}
 	}
 
+	void initialize_gif_frame_update()
+	{
+		last_gif_frame_updated = (unsigned int*)malloc(sizeof(unsigned int) * frame_buffer_size);
+
+		for (int i = 0; i < frame_buffer_size; i++)
+		{
+			last_gif_frame_updated[i] = 0;
+		}
+	}
+
+	void background_color()
+	{
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+		SDL_RenderClear(renderer);
+	}
+
+	void draw_particles(particle_system *d, int index)
+	{	
+		SDL_Rect rect;
+		rect.x = d[index].x;
+		rect.y = d[index].y;
+		rect.w = d[index].w;
+		rect.h = d[index].h;
+
+		SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+		SDL_RenderFillRect(renderer,&rect);
+	}
+
 	void draw_meme(meme_data *d, int index)
 	{
 		SDL_Rect screen_pos;
@@ -99,17 +137,13 @@ namespace Data
 		screen_pos.w = d[index].w;
 		screen_pos.h = d[index].h;
 
-		//d[index].gif_index is the parsed value from gif array
-		//src.y = current_frame * height;
-		//src.w = gif_width
-		//src.h = gif_height
-		d[index].gif_src.y = d->current_frame * gif_height[d[index].gif_index];
+		d[index].gif_src.y = d[index].current_frame * gif_height[d[index].gif_index];
 		d[index].gif_src.w = gif_width[d[index].gif_index];
 		d[index].gif_src.h = gif_height[d[index].gif_index];
 		SDL_RenderCopyEx(renderer, gif_textures[d[index].gif_index], &d[index].gif_src, &screen_pos, 0, NULL, SDL_FLIP_NONE);
 	}
 
-	int create_actor_memes(unsigned char *arr, int array_size)
+	int create_actor_meme(unsigned char *arr, int array_size)
 	{
 		for (int i = 0; i < array_size; i++)
 		{
@@ -121,7 +155,19 @@ namespace Data
 		}
 	}
 
-	int create_actor_gifs(unsigned char *arr, int array_size)
+	int create_actor_gif(unsigned char *arr, int array_size)
+	{
+		for (int i = 0; i < array_size; i++)
+		{
+			if (arr[i] == 0)
+			{
+				arr[i] = 1;
+				return i;
+			}
+		}
+	}
+
+	int create_actor_particle(unsigned char *arr, int array_size)
 	{
 		for (int i = 0; i < array_size; i++)
 		{

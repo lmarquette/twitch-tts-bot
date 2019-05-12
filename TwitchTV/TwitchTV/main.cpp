@@ -54,32 +54,42 @@ int main(int argc, char **argv)
 	for (int i = 0; i < number_of_copies_to_show; i++)
 	{
 		copy_username[i] = "//";
-		copy_message[i] = "intializing";
+		copy_message[i] = "initializing";
 	}
 
 	copy_n_count = number_of_copies_to_show;
 
 	int meme_array_size = 10000;
 	int gif_array_size = 5000;
+	int particle_system_array_size = 10000;
 
 	//Initialize Meme Data 
 	Data::meme_data *meme_data = new Data::meme_data[meme_array_size];
 	Data::gif_data *gif_data = new Data::gif_data[gif_array_size];
+	Data::particle_system *particle_data = new Data::particle_system[particle_system_array_size];
 	unsigned char *active_meme = new unsigned char[meme_array_size];
 	unsigned char *active_gif = new unsigned char[gif_array_size];
+	unsigned char *active_particle = new unsigned char[particle_system_array_size];
 
 	//intialize meme array to 0
 	for (int i = 0; i < meme_array_size; i++)
 	{
 		active_meme[i] = 0;
-		Data::intialize_meme_data(&meme_data[i]);
+		Data::initialize_meme_data(&meme_data[i]);
 	}
 
 	//initialize gif array to 0
 	for (int i = 0; i < gif_array_size; i++)
 	{
 		active_gif[i] = 0;
-		Data::intialize_gif_data(&gif_data[i]);
+		Data::initialize_gif_data(&gif_data[i]);
+	}
+
+	//initialize particle array to 0
+	for (int i = 0; i < particle_system_array_size; i++)
+	{
+		active_particle[i] = 0;
+		Data::initiailize_particle_system(&particle_data[i]);
 	}
 
 	int parsed_index_memes = -1;
@@ -87,9 +97,9 @@ int main(int argc, char **argv)
 
 	//initialize
 	Data::initialize_sdl();
-	Data::intialize_memes();
+	Data::initialize_memes();
 	Data::initialize_gifs();
-	Data::intialize_gif_frame_update();
+	Data::initialize_gif_frame_update();
 	srand(time(0));
 
 	//initialize network
@@ -121,6 +131,8 @@ int main(int argc, char **argv)
 	printf("chat log\n");	
 	for (;;)
 	{
+		Data::background_color();
+	
 		srand(time(0));
 		unsigned int current_time = SDL_GetTicks();
 		unsigned int last_text_change_tiem = SDL_GetTicks();
@@ -160,17 +172,17 @@ int main(int argc, char **argv)
 			//create meme
 			if (parsed_index_memes != -1)
 			{
-				for (int yolo = 0; yolo < rand() % 100; yolo++)//spawn multiple emotes
+				for (int yolo = 0; yolo < rand() % 300; yolo++)//spawn multiple emotes
 				{
-					int k = Data::create_actor_memes(active_meme, meme_array_size);
+					int k = Data::create_actor_meme(active_meme, meme_array_size);
 					if (k != -1)
 					{
 						meme_data[k].w = rand() % 100 + 50;
 						meme_data[k].h = rand() % 100 + 50;
 						meme_data[k].x = screen_width / 2 - meme_data[k].w / 2;
 						meme_data[k].y = screen_height / 2 - meme_data[k].h / 2;
-						meme_data[k].vel_x = .15*rand() / RAND_MAX;
-						meme_data[k].vel_y = .15*rand() / RAND_MAX;
+						meme_data[k].vel_x = -.15*rand() / RAND_MAX;
+						meme_data[k].vel_y = -.15*rand() / RAND_MAX;
 						meme_data[k].creation_time = current_time;
 						meme_data[k].meme_index = parsed_index_memes;
 					}
@@ -184,20 +196,16 @@ int main(int argc, char **argv)
 			//create gif
 			if (parsed_index_gifs != -1)
 			{
-				int k = Data::create_actor_gifs(active_gif, gif_array_size);
+				int k = Data::create_actor_gif(active_gif, gif_array_size);
 				if (k != -1)
 				{
 					cout << gif_width[parsed_index_gifs] << endl;
 					gif_data[k].w = gif_width[parsed_index_gifs];
 					gif_data[k].h = gif_height[parsed_index_gifs];
 					gif_data[k].x = screen_width / 2 - gif_data[k].w / 2;
-					gif_data[k].y = screen_height / 2;
-					//gif_data[k].y = Data::screen_height + gif_height[parsed_index_gifs];
+					gif_data[k].y = screen_height - gif_height[parsed_index_gifs];
 					gif_data[k].creation_time = current_time;
 					gif_data[k].gif_index = parsed_index_gifs;
-
-					cout << "parsed gif: " << parsed_index_gifs << endl;
-					cout << "What index: " << k << endl;
 				}
 				else
 				{
@@ -237,6 +245,16 @@ int main(int argc, char **argv)
 			if (current_time - gif_data[i].creation_time > 10000)
 			{
 				Data::destroy_actor(active_gif, i);
+			}
+		}
+
+		//destroy particle
+		for (int i = 0; i < meme_array_size; i++)
+		{
+			if (active_particle[i] == 0) continue;
+			if (current_time - meme_data[i].creation_time > 8000)
+			{
+				Data::destroy_actor(active_particle, i);
 			}
 		}
 
@@ -306,7 +324,7 @@ int main(int argc, char **argv)
 			}
 		}
 
-		//render memes on the page
+		//render memes/dictate where particles will spawn on the page
 		for (int i = 0; i < meme_array_size; i++)
 		{
 			if (active_meme[i] == 0) continue;
@@ -317,24 +335,80 @@ int main(int argc, char **argv)
 			if (meme_data[i].x <= 0)
 			{
 				meme_data[i].vel_x *= -1;
+
+				//for (int yolo = 0; yolo < rand() % 1000; yolo++)//spawn multiple emotes
+				//{
+					int k = Data::create_actor_particle(active_particle, particle_system_array_size);
+
+					if (k != -1)
+					{
+						particle_data[k].x = meme_data[i].x;
+						particle_data[k].y = meme_data[i].y;
+						particle_data[k].vel_x = meme_data[i].vel_x;
+						particle_data[k].vel_y = meme_data[i].vel_y;
+						particle_data[k].creation_time;
+					}
+				//}
 			}
 			if (meme_data[i].x + meme_data[i].w >= screen_width)
 			{
 				meme_data[i].vel_x *= -1;
+
+				//for (int yolo = 0; yolo < rand() % 1000; yolo++)//spawn multiple emotes
+				//{
+					int k = Data::create_actor_particle(active_particle, particle_system_array_size);
+
+					if (k != -1)
+					{
+						particle_data[k].x = meme_data[i].x;
+						particle_data[k].y = meme_data[i].y;
+						particle_data[k].vel_x = meme_data[i].vel_x;
+						particle_data[k].vel_y = meme_data[i].vel_y;
+						particle_data[k].creation_time;
+					}
+				//}
 			}
 			if (meme_data[i].y <= 0)
 			{
 				meme_data[i].vel_y *= -1;
+
+				//for (int yolo = 0; yolo < rand() % 1000; yolo++)//spawn multiple emotes
+				//{
+					int k = Data::create_actor_particle(active_particle, particle_system_array_size);
+
+					if (k != -1)
+					{
+						particle_data[k].x = meme_data[i].x;
+						particle_data[k].y = meme_data[i].y;
+						particle_data[k].vel_x = meme_data[i].vel_x;
+						particle_data[k].vel_y = meme_data[i].vel_y;
+						particle_data[k].creation_time;
+					}
+				//}
 			}
 			if (meme_data[i].y + meme_data[i].h >= screen_height)
 			{
 				meme_data[i].vel_y *= -1;
+
+				//for (int yolo = 0; yolo < rand() % 1000; yolo++)//spawn multiple emotes
+				//{
+					int k = Data::create_actor_particle(active_particle, particle_system_array_size);
+
+					if (k != -1)
+					{
+						particle_data[k].x = meme_data[i].x;
+						particle_data[k].y = meme_data[i].y;
+						particle_data[k].vel_x = meme_data[i].vel_x;
+						particle_data[k].vel_y = meme_data[i].vel_y;
+						particle_data[k].creation_time;
+					}
+				//}
 			}
 			//draw le meme
 			Data::draw_meme(meme_data, i);
 		}
 
-		
+		//render gifs on the page
 		current_time = SDL_GetTicks();
 		for (int i = 0; i < gif_array_size; i++)
 		{
@@ -343,13 +417,21 @@ int main(int argc, char **argv)
 			if (current_time - last_gif_frame_updated[i] > 50)
 			{
 				last_gif_frame_updated[i] = current_time;
-				//current_frame++;
-				//cout << "draw gif index: " << gif_data[i].gif_index << endl;
-				//if current_frame > total frames set current frame to 0
 				gif_data[i].current_frame++;
-				if (gif_data[i].current_frame >= gif_height[gif_data[i].gif_index]) gif_data[i].current_frame = 0;
+				if (gif_data[i].current_frame > gif_number_of_frames[gif_data[i].gif_index]) gif_data[i].current_frame = 0;
 			}
 			draw_gif(gif_data, i);
+		}
+
+		//render particle 
+		current_time = SDL_GetTicks();
+		for (int i = 0; i < particle_system_array_size; i++)
+		{
+			if (active_particle[i] == 0) continue;
+			
+			particle_data[i].x += particle_data[i].vel_x  * particle_data[i].gravity;
+			particle_data[i].y += particle_data[i].vel_y * particle_data[i].gravity;;
+			Data::draw_particles(particle_data, i);
 		}
 
 		SDL_RenderPresent(renderer);
